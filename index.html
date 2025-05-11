@@ -2,140 +2,31 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8">
-  <title>Formulario de Carga Diaria</title>
+  <title>Panel de Carga y Vista</title>
   <style>
     body {
       font-family: Arial, sans-serif;
       margin: 40px auto;
-      max-width: 700px;
+      max-width: 800px;
       padding: 20px;
-      background-color: #f4f4f4;
+      background-color: #f9f9f9;
       border-radius: 10px;
-      box-shadow: 0 0 10px rgba(0,0,0,0.1);
     }
-    h2 {
-      color: #333;
+
+    h1 {
       text-align: center;
+      color: #333;
     }
+
+    form {
+      background: #fff;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 0 5px rgba(0,0,0,0.1);
+      margin-bottom: 30px;
+    }
+
     label {
       display: block;
       margin: 15px 0 5px;
       font-weight: bold;
-    }
-    input[type="text"], textarea {
-      width: 100%;
-      padding: 8px;
-      border: 1px solid #ccc;
-      border-radius: 5px;
-    }
-    button {
-      margin-top: 20px;
-      padding: 10px 15px;
-      border: none;
-      background-color: #007bff;
-      color: white;
-      font-size: 16px;
-      border-radius: 5px;
-      cursor: pointer;
-    }
-    button:hover {
-      background-color: #0056b3;
-    }
-    table {
-      margin-top: 30px;
-      width: 100%;
-      border-collapse: collapse;
-    }
-    th, td {
-      border: 1px solid #ccc;
-      padding: 8px;
-      text-align: left;
-    }
-    th {
-      background-color: #eee;
-    }
-    .link-github {
-      margin-top: 30px;
-      text-align: center;
-    }
-    .link-github a {
-      color: #007bff;
-      text-decoration: none;
-      font-weight: bold;
-    }
-    .link-github a:hover {
-      text-decoration: underline;
-    }
-  </style>
-</head>
-<body>
-  <h2>Formulario de Carga Diaria</h2>
-
-  <form id="formulario">
-    <label for="usuario">Usuario</label>
-    <input type="text" id="usuario" required />
-
-    <label for="caso">Caso</label>
-    <input type="text" id="caso" required />
-
-    <label for="comentario">Comentario</label>
-    <textarea id="comentario" rows="3"></textarea>
-
-    <button type="submit">Agregar a tabla</button>
-  </form>
-
-  <table id="tabla">
-    <thead>
-      <tr>
-        <th>Usuario</th>
-        <th>Caso</th>
-        <th>Comentario</th>
-      </tr>
-    </thead>
-    <tbody></tbody>
-  </table>
-
-  <button onclick="descargarCSV()">Descargar CSV</button>
-
-  <div class="link-github">
-    <p>Ver el repositorio en GitHub: <a href="https://github.com/USUARIO/formulario-cargas" target="_blank">Abrir repositorio</a></p>
-  </div>
-
-  <script>
-    const datos = [];
-
-    document.getElementById('formulario').addEventListener('submit', function(e) {
-      e.preventDefault();
-      const usuario = document.getElementById('usuario').value;
-      const caso = document.getElementById('caso').value;
-      const comentario = document.getElementById('comentario').value;
-
-      datos.push({ usuario, caso, comentario });
-      actualizarTabla();
-      this.reset();
-    });
-
-    function actualizarTabla() {
-      const tbody = document.querySelector('#tabla tbody');
-      tbody.innerHTML = '';
-      datos.forEach(d => {
-        const fila = `<tr><td>${d.usuario}</td><td>${d.caso}</td><td>${d.comentario}</td></tr>`;
-        tbody.insertAdjacentHTML('beforeend', fila);
-      });
-    }
-
-    function descargarCSV() {
-      const filas = [['Usuario', 'Caso', 'Comentario'], ...datos.map(d => [d.usuario, d.caso, d.comentario])];
-      const csv = filas.map(fila => fila.map(v => `"${v}"`).join(',')).join('\n');
-      const blob = new Blob([csv], { type: 'text/csv' });
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = 'carga_diaria.csv';
-      a.click();
-      URL.revokeObjectURL(url);
-    }
-  </script>
-</body>
-</html>
-
