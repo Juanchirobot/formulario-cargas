@@ -1,3 +1,202 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <title>Vista de Casos - SharePoint Style</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background-color: #f3f2f1;
+      margin: 0;
+      padding: 0;
+    }
+
+    header {
+      background-color: #0078d4;
+      color: white;
+      padding: 20px;
+      text-align: center;
+    }
+
+    main {
+      padding: 30px;
+      max-width: 1000px;
+      margin: auto;
+      background: white;
+      border-radius: 8px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.05);
+    }
+
+    .btn {
+      background-color: #0078d4;
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 14px;
+      margin-bottom: 20px;
+    }
+
+    .btn:hover {
+      background-color: #005a9e;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 10px;
+    }
+
+    th, td {
+      text-align: left;
+      padding: 10px;
+      border-bottom: 1px solid #ddd;
+    }
+
+    th {
+      background-color: #f3f2f1;
+      font-weight: 600;
+    }
+
+    #formularioContainer {
+      display: none;
+      margin-top: 30px;
+      padding: 20px;
+      border: 1px solid #ccc;
+      background-color: #fafafa;
+      border-radius: 8px;
+    }
+
+    label {
+      display: block;
+      margin-top: 15px;
+      font-weight: 600;
+    }
+
+    input, textarea {
+      width: 100%;
+      padding: 8px;
+      margin-top: 5px;
+      border-radius: 4px;
+      border: 1px solid #ccc;
+    }
+
+    .footer-buttons {
+      margin-top: 20px;
+    }
+
+    .footer-buttons button {
+      margin-right: 10px;
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <h1>Lista de Casos - Vista estilo SharePoint</h1>
+  </header>
+
+  <main>
+    <button class="btn" onclick="toggleFormulario()">➕ Nuevo registro</button>
+
+    <!-- Tabla histórica -->
+    <table id="tabla">
+      <thead>
+        <tr>
+          <th>Usuario</th>
+          <th>Caso</th>
+          <th>Comentario</th>
+        </tr>
+      </thead>
+      <tbody></tbody>
+    </table>
+
+    <!-- Formulario oculto -->
+    <div id="formularioContainer">
+      <h3>Formulario de Carga</h3>
+      <form id="formulario">
+        <label for="usuario">Usuario</label>
+        <input type="text" id="usuario" required>
+
+        <label for="caso">Caso</label>
+        <input type="text" id="caso" required>
+
+        <label for="comentario">Comentario</label>
+        <textarea id="comentario" rows="3"></textarea>
+
+        <div class="footer-buttons">
+          <button type="submit" class="btn">Agregar</button>
+          <button type="button" class="btn" onclick="toggleFormulario()">Cancelar</button>
+          <button type="button" class="btn" onclick="descargarCSV()">Descargar CSV</button>
+        </div>
+      </form>
+    </div>
+  </main>
+
+  <script>
+    const datos = [];
+
+    function toggleFormulario() {
+      const container = document.getElementById('formularioContainer');
+      container.style.display = container.style.display === 'none' ? 'block' : 'none';
+    }
+
+    document.getElementById('formulario').addEventListener('submit', function(e) {
+      e.preventDefault();
+      const usuario = document.getElementById('usuario').value;
+      const caso = document.getElementById('caso').value;
+      const comentario = document.getElementById('comentario').value;
+
+      datos.push({ usuario, caso, comentario });
+      actualizarTabla();
+      this.reset();
+      toggleFormulario();
+    });
+
+    function actualizarTabla() {
+      const tbody = document.querySelector('#tabla tbody');
+      tbody.innerHTML = '';
+      datos.forEach(d => {
+        const fila = `<tr><td>${d.usuario}</td><td>${d.caso}</td><td>${d.comentario}</td></tr>`;
+        tbody.insertAdjacentHTML('beforeend', fila);
+      });
+    }
+
+    function descargarCSV() {
+      const filas = [['Usuario', 'Caso', 'Comentario'], ...datos.map(d => [d.usuario, d.caso, d.comentario])];
+      const csv = filas.map(fila => fila.map(v => `"${v}"`).join(',')).join('\n');
+      const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'historico_carga.csv';
+      a.click();
+      URL.revokeObjectURL(url);
+    }
+
+    async function cargarCSVDesdeGitHub() {
+      const url = 'https://raw.githubusercontent.com/Juanchirobot/formulario-cargas/main/historico_carga.csv';
+      try {
+        const response = await fetch(url);
+        const text = await response.text();
+        const rows = text.trim().split('\n').slice(1);
+        rows.forEach(row => {
+          const [usuario, caso, comentario] = row.split(',').map(v => v.replace(/(^"|"$)/g, ''));
+          datos.push({ usuario, caso, comentario });
+        });
+        actualizarTabla();
+      } catch (error) {
+        console.error('Error al cargar el CSV:', error);
+      }
+    }
+
+    cargarCSVDesdeGitHub();
+  </script>
+</body>
+</html>
+
+
 <script src="datos.js"></script>
 <script>
   document.addEventListener("DOMContentLoaded", () => {
