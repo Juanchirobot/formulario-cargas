@@ -1,246 +1,357 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8" />
-  <title>Prevención de Fraudes</title>
-  <style>
-    body {
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      background-color: #f3f2f1;
-      margin: 0;
-      padding: 0;
-    }
+    <meta charset="UTF-8" />
+    <title>Prevención de Fraudes</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f3f2f1;
+            margin: 0;
+            padding: 0;
+        }
 
-    header {
-      background-color: #0078d4;
-      color: white;
-      padding: 20px;
-      text-align: center;
-    }
+        header {
+            background-color: #0078d4;
+            color: white;
+            padding: 20px;
+            text-align: center;
+        }
 
-    main {
-      padding: 30px;
-      max-width: 1200px;
-      margin: auto;
-      background: white;
-      border-radius: 8px;
-      box-shadow: 0 0 10px rgba(0,0,0,0.05);
-    }
+        main {
+            padding: 30px;
+            max-width: 1200px;
+            margin: auto;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.05);
+        }
 
-    .btn {
-      background-color: #0078d4;
-      color: white;
-      border: none;
-      padding: 10px 20px;
-      border-radius: 4px;
-      cursor: pointer;
-      font-size: 14px;
-      margin-bottom: 20px;
-    }
+        .btn {
+            background-color: #0078d4;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+            margin-bottom: 20px;
+        }
 
-    .btn:hover {
-      background-color: #005a9e;
-    }
+        .btn:hover {
+            background-color: #005a9e;
+        }
 
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      margin-top: 10px;
-    }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+        }
 
-    th, td {
-      text-align: left;
-      padding: 10px;
-      border-bottom: 1px solid #ddd;
-    }
+        th, td {
+            text-align: left;
+            padding: 10px;
+            border-bottom: 1px solid #ddd;
+        }
 
-    th {
-      background-color: #f3f2f1;
-      font-weight: 600;
-    }
+        th {
+            background-color: #f3f2f1;
+            font-weight: 600;
+        }
 
-    #formularioContainer {
-      display: none;
-      margin-top: 30px;
-      padding: 20px;
-      border: 1px solid #ccc;
-      background-color: #fafafa;
-      border-radius: 8px;
-    }
+        #formularioContainer {
+            display: none;
+            margin-top: 30px;
+            padding: 20px;
+            border: 1px solid #ccc;
+            background-color: #fafafa;
+            border-radius: 8px;
+        }
 
-    label {
-      display: block;
-      margin-top: 15px;
-      font-weight: 600;
-    }
+        label {
+            display: block;
+            margin-top: 15px;
+            font-weight: 600;
+        }
 
-    input, textarea {
-      width: 100%;
-      padding: 8px;
-      margin-top: 5px;
-      border-radius: 4px;
-      border: 1px solid #ccc;
-    }
+        input, textarea {
+            width: 100%;
+            padding: 8px;
+            margin-top: 5px;
+            border-radius: 4px;
+            border: 1px solid #ccc;
+        }
 
-    .footer-buttons {
-      margin-top: 20px;
-    }
+        .footer-buttons {
+            margin-top: 20px;
+        }
 
-    .footer-buttons button {
-      margin-right: 10px;
-    }
-  </style>
+        .footer-buttons button {
+            margin-right: 10px;
+        }
+
+        .grafico-container {
+            margin-top: 30px;
+            border: 1px solid #ccc;
+            padding: 15px;
+            border-radius: 8px;
+            background-color: #fff;
+        }
+    </style>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
 
-  <header>
-    <h1>Lista de Casos</h1>
-  </header>
+    <header>
+        <h1>Lista de Casos</h1>
+    </header>
 
-  <main>
-    <button class="btn" onclick="toggleFormulario()">➕ Nuevo registro</button>
+    <main>
+        <button class="btn" onclick="toggleFormulario()">➕ Nuevo registro</button>
 
-    <!-- Tabla histórica -->
-    <table id="tabla">
-      <thead>
-        <tr>
-          <th>Usuario</th>
-          <th>Fecha</th>
-          <th>Caso</th>
-          <th>Descripción</th>
-          <th>Estado</th>
-          <th>Prioridad</th>
-          <th>Tipo de Riesgo</th>
-          <th>Canal de Detección</th>
-          <th>Monto Sospechoso</th>
-          <th>Observaciones</th>
-        </tr>
-      </thead>
-      <tbody></tbody>
-    </table>
+        <table id="tabla">
+            <thead>
+                <tr>
+                    <th>Usuario</th>
+                    <th>Fecha</th>
+                    <th>Caso</th>
+                    <th>Descripción</th>
+                    <th>Estado</th>
+                    <th>Prioridad</th>
+                    <th>Tipo de Riesgo</th>
+                    <th>Canal de Detección</th>
+                    <th>Monto Sospechoso</th>
+                    <th>Observaciones</th>
+                </tr>
+            </thead>
+            <tbody></tbody>
+        </table>
 
-    <!-- Formulario oculto -->
-    <div id="formularioContainer">
-      <h3>Formulario de Carga</h3>
-      <form id="formulario">
-        <label for="usuario">Usuario</label>
-        <input type="text" id="usuario" required>
-
-        <label for="fecha">Fecha</label>
-        <input type="date" id="fecha" required>
-
-        <label for="caso">Caso</label>
-        <input type="text" id="caso" required>
-
-        <label for="descripcion">Descripción</label>
-        <textarea id="descripcion" rows="3"></textarea>
-
-        <label for="estado">Estado</label>
-        <input type="text" id="estado" required>
-
-        <label for="prioridad">Prioridad</label>
-        <input type="text" id="prioridad" required>
-
-        <label for="tipo_riesgo">Tipo de Riesgo</label>
-        <input type="text" id="tipo_riesgo" required>
-
-        <label for="canal_deteccion">Canal de Detección</label>
-        <input type="text" id="canal_deteccion" required>
-
-        <label for="monto_sospechoso">Monto Sospechoso</label>
-        <input type="number" id="monto_sospechoso" required>
-
-        <label for="observaciones">Observaciones</label>
-        <textarea id="observaciones" rows="3"></textarea>
-
-        <div class="footer-buttons">
-          <button type="submit" class="btn">Agregar</button>
-          <button type="button" class="btn" onclick="toggleFormulario()">Cancelar</button>
-          <button type="button" class="btn" onclick="descargarCSV()">Descargar CSV</button>
+        <div class="grafico-container">
+            <h2>Casos por Estado</h2>
+            <canvas id="estadosChart"></canvas>
         </div>
-      </form>
-    </div>
-  </main>
 
-  <script>
-    const datos = [];
+        <div class="grafico-container">
+            <h2>Casos por Tipo de Riesgo</h2>
+            <canvas id="riesgosChart"></canvas>
+        </div>
 
-    function toggleFormulario() {
-      const container = document.getElementById('formularioContainer');
-      container.style.display = container.style.display === 'none' ? 'block' : 'none';
-    }
+        <div class="grafico-container">
+            <h2>Casos por Canal de Detección</h2>
+            <canvas id="canalesChart"></canvas>
+        </div>
 
-    document.getElementById('formulario').addEventListener('submit', function(e) {
-      e.preventDefault();
-      const nuevoRegistro = {
-        usuario: document.getElementById('usuario').value,
-        fecha: document.getElementById('fecha').value,
-        caso: document.getElementById('caso').value,
-        descripcion: document.getElementById('descripcion').value,
-        estado: document.getElementById('estado').value,
-        prioridad: document.getElementById('prioridad').value,
-        tipo_riesgo: document.getElementById('tipo_riesgo').value,
-        canal_deteccion: document.getElementById('canal_deteccion').value,
-        monto_sospechoso: document.getElementById('monto_sospechoso').value,
-        observaciones: document.getElementById('observaciones').value
-      };
+        <div id="formularioContainer">
+            <h3>Formulario de Carga</h3>
+            <form id="formulario">
+                <label for="usuario">Usuario</label>
+                <input type="text" id="usuario" required>
 
-      datos.push(nuevoRegistro);
-      actualizarTabla();
-      this.reset();
-      toggleFormulario();
-    });
+                <label for="fecha">Fecha</label>
+                <input type="date" id="fecha" required>
 
-    function actualizarTabla() {
-      const tbody = document.querySelector('#tabla tbody');
-      tbody.innerHTML = '';
-      datos.forEach(d => {
-        const fila = `<tr>
-          <td>${d.usuario}</td>
-          <td>${d.fecha}</td>
-          <td>${d.caso}</td>
-          <td>${d.descripcion}</td>
-          <td>${d.estado}</td>
-          <td>${d.prioridad}</td>
-          <td>${d.tipo_riesgo}</td>
-          <td>${d.canal_deteccion}</td>
-          <td>${d.monto_sospechoso}</td>
-          <td>${d.observaciones}</td>
-        </tr>`;
-        tbody.insertAdjacentHTML('beforeend', fila);
-      });
-    }
+                <label for="caso">Caso</label>
+                <input type="text" id="caso" required>
 
-    async function cargarCSVDesdeGitHub() {
-      const url = 'https://raw.githubusercontent.com/Juanchirobot/formulario-cargas/main/historico_carga.csv';
-      try {
-        const response = await fetch(url);
-        const text = await response.text();
-        const rows = text.trim().split('\n').slice(1);
-        rows.forEach(row => {
-          const valores = row.split(',').map(v => v.replace(/(^"|"$)/g, ''));
-          if (valores.length === 10) {
-            datos.push({
-              usuario: valores[0],
-              fecha: valores[1],
-              caso: valores[2],
-              descripcion: valores[3],
-              estado: valores[4],
-              prioridad: valores[5],
-              tipo_riesgo: valores[6],
-              canal_deteccion: valores[7],
-              monto_sospechoso: valores[8],
-              observaciones: valores[9]
-            });
-          }
+                <label for="descripcion">Descripción</label>
+                <textarea id="descripcion" rows="3"></textarea>
+
+                <label for="estado">Estado</label>
+                <input type="text" id="estado" required>
+
+                <label for="prioridad">Prioridad</label>
+                <input type="text" id="prioridad" required>
+
+                <label for="tipo_riesgo">Tipo de Riesgo</label>
+                <input type="text" id="tipo_riesgo" required>
+
+                <label for="canal_deteccion">Canal de Detección</label>
+                <input type="text" id="canal_deteccion" required>
+
+                <label for="monto_sospechoso">Monto Sospechoso</label>
+                <input type="number" id="monto_sospechoso" required>
+
+                <label for="observaciones">Observaciones</label>
+                <textarea id="observaciones" rows="3"></textarea>
+
+                <div class="footer-buttons">
+                    <button type="submit" class="btn">Agregar</button>
+                    <button type="button" class="btn" onclick="toggleFormulario()">Cancelar</button>
+                    <button type="button" class="btn" onclick="descargarCSV()">Descargar CSV</button>
+                </div>
+            </form>
+        </div>
+    </main>
+
+    <script>
+        const datos = [];
+        const estadosContador = {};
+        const riesgosContador = {};
+        const canalesContador = {};
+
+        function toggleFormulario() {
+            const container = document.getElementById('formularioContainer');
+            container.style.display = container.style.display === 'none' ? 'block' : 'none';
+        }
+
+        document.getElementById('formulario').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const nuevoRegistro = {
+                usuario: document.getElementById('usuario').value,
+                fecha: document.getElementById('fecha').value,
+                caso: document.getElementById('caso').value,
+                descripcion: document.getElementById('descripcion').value,
+                estado: document.getElementById('estado').value,
+                prioridad: document.getElementById('prioridad').value,
+                tipo_riesgo: document.getElementById('tipo_riesgo').value,
+                canal_deteccion: document.getElementById('canal_deteccion').value,
+                monto_sospechoso: document.getElementById('monto_sospechoso').value,
+                observaciones: document.getElementById('observaciones').value
+            };
+
+            datos.push(nuevoRegistro);
+            actualizarTabla();
+            actualizarGraficos();
+            this.reset();
+            toggleFormulario();
         });
-        actualizarTabla();
-      } catch (error) {
-        console.error('Error al cargar el CSV:', error);
-      }
-    }
 
-    cargarCSVDesdeGitHub();
-  </script>
+        function actualizarTabla() {
+            const tbody = document.querySelector('#tabla tbody');
+            tbody.innerHTML = '';
+            datos.forEach(d => {
+                const fila = `<tr>
+                    <td>${d.usuario}</td>
+                    <td>${d.fecha}</td>
+                    <td>${d.caso}</td>
+                    <td>${d.descripcion}</td>
+                    <td>${d.estado}</td>
+                    <td>${d.prioridad}</td>
+                    <td>${d.tipo_riesgo}</td>
+                    <td>${d.canal_deteccion}</td>
+                    <td>${d.monto_sospechoso}</td>
+                    <td>${d.observaciones}</td>
+                </tr>`;
+                tbody.insertAdjacentHTML('beforeend', fila);
+            });
+        }
+
+        async function cargarCSVDesdeGitHub() {
+            const url = 'https://raw.githubusercontent.com/Juanchirobot/formulario-cargas/main/historico_carga.csv';
+            try {
+                const response = await fetch(url);
+                const text = await response.text();
+                const rows = text.trim().split('\n').slice(1);
+                rows.forEach(row => {
+                    const valores = row.split(',').map(v => v.replace(/(^"|"$)/g, ''));
+                    if (valores.length === 10) {
+                        datos.push({
+                            usuario: valores[0],
+                            fecha: valores[1],
+                            caso: valores[2],
+                            descripcion: valores[3],
+                            estado: valores[4],
+                            prioridad: valores[5],
+                            tipo_riesgo: valores[6],
+                            canal_deteccion: valores[7],
+                            monto_sospechoso: valores[8],
+                            observaciones: valores[9]
+                        });
+                        // Contar para los gráficos
+                        estadosContador[valores[4]] = (estadosContador[valores[4]] || 0) + 1;
+                        riesgosContador[valores[6]] = (riesgosContador[valores[6]] || 0) + 1;
+                        canalesContador[valores[7]] = (canalesContador[valores[7]] || 0) + 1;
+                    }
+                });
+                actualizarTabla();
+                actualizarGraficos();
+            } catch (error) {
+                console.error('Error al cargar el CSV:', error);
+            }
+        }
+
+        function actualizarGraficos() {
+            // Gráfico de Estados
+            const estadosCanvas = document.getElementById('estadosChart');
+            new Chart(estadosCanvas, {
+                type: 'bar',
+                data: {
+                    labels: Object.keys(estadosContador),
+                    datasets: [{
+                        label: 'Cantidad de Casos',
+                        data: Object.values(estadosContador),
+                        backgroundColor: 'rgba(54, 162, 235, 0.8)',
+                        borderColor: 'rgba(54, 162, 235, 1)',
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            precision: 0
+                        }
+                    }
+                }
+            });
+
+            // Gráfico de Tipos de Riesgo
+            const riesgosCanvas = document.getElementById('riesgosChart');
+            new Chart(riesgosCanvas, {
+                type: 'pie',
+                data: {
+                    labels: Object.keys(riesgosContador),
+                    datasets: [{
+                        label: 'Cantidad de Casos',
+                        data: Object.values(riesgosContador),
+                        backgroundColor: [
+                            'rgba(255, 99, 132, 0.8)',
+                            'rgba(75, 192, 192, 0.8)',
+                            'rgba(255, 206, 86, 0.8)',
+                            'rgba(153, 102, 255, 0.8)',
+                            'rgba(255, 159, 64, 0.8)',
+                            'rgba(101, 205, 254, 0.8)'
+                        ],
+                        borderColor: 'rgba(255, 255, 255, 1)',
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                }
+            });
+
+            // Gráfico de Canales de Detección
+            const canalesCanvas = document.getElementById('canalesChart');
+            new Chart(canalesCanvas, {
+                type: 'doughnut',
+                data: {
+                    labels: Object.keys(canalesContador),
+                    datasets: [{
+                        label: 'Cantidad de Casos',
+                        data: Object.values(canalesContador),
+                        backgroundColor: [
+                            'rgba(26, 188, 156, 0.8)',
+                            'rgba(52, 152, 219, 0.8)',
+                            'rgba(155, 89, 182, 0.8)',
+                            'rgba(241, 196, 15, 0.8)',
+                            'rgba(230, 126, 34, 0.8)',
+                            'rgba(46, 204, 113, 0.8)'
+                        ],
+                        borderColor: 'rgba(255, 255, 255, 1)',
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                }
+            });
+        }
+
+        cargarCSVDesdeGitHub();
+    </script>
 </body>
 </html>
