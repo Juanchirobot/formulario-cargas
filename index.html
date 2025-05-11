@@ -1,29 +1,105 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8" />
-  <title>Formulario de Cargas</title>
+  <meta charset="UTF-8">
+  <title>Formulario de Carga Diaria</title>
   <style>
-    body { font-family: sans-serif; padding: 20px; }
-    table, th, td { border: 1px solid #ccc; border-collapse: collapse; padding: 5px; }
+    body {
+      font-family: Arial, sans-serif;
+      margin: 40px auto;
+      max-width: 700px;
+      padding: 20px;
+      background-color: #f4f4f4;
+      border-radius: 10px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    }
+    h2 {
+      color: #333;
+      text-align: center;
+    }
+    label {
+      display: block;
+      margin: 15px 0 5px;
+      font-weight: bold;
+    }
+    input[type="text"], textarea {
+      width: 100%;
+      padding: 8px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+    }
+    button {
+      margin-top: 20px;
+      padding: 10px 15px;
+      border: none;
+      background-color: #007bff;
+      color: white;
+      font-size: 16px;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+    button:hover {
+      background-color: #0056b3;
+    }
+    table {
+      margin-top: 30px;
+      width: 100%;
+      border-collapse: collapse;
+    }
+    th, td {
+      border: 1px solid #ccc;
+      padding: 8px;
+      text-align: left;
+    }
+    th {
+      background-color: #eee;
+    }
+    .link-github {
+      margin-top: 30px;
+      text-align: center;
+    }
+    .link-github a {
+      color: #007bff;
+      text-decoration: none;
+      font-weight: bold;
+    }
+    .link-github a:hover {
+      text-decoration: underline;
+    }
   </style>
 </head>
 <body>
-  <h2>Formulario de carga</h2>
+  <h2>Formulario de Carga Diaria</h2>
+
   <form id="formulario">
-    <label>Usuario: <input type="text" id="usuario" required></label><br><br>
-    <label>Caso: <input type="text" id="caso" required></label><br><br>
-    <label>Comentario: <input type="text" id="comentario"></label><br><br>
-    <button type="submit">Agregar</button>
+    <label for="usuario">Usuario</label>
+    <input type="text" id="usuario" required />
+
+    <label for="caso">Caso</label>
+    <input type="text" id="caso" required />
+
+    <label for="comentario">Comentario</label>
+    <textarea id="comentario" rows="3"></textarea>
+
+    <button type="submit">Agregar a tabla</button>
   </form>
 
-  <h3>Datos ingresados:</h3>
   <table id="tabla">
-    <thead><tr><th>Usuario</th><th>Caso</th><th>Comentario</th></tr></thead>
+    <thead>
+      <tr>
+        <th>Usuario</th>
+        <th>Caso</th>
+        <th>Comentario</th>
+      </tr>
+    </thead>
     <tbody></tbody>
   </table>
 
-  <br><button onclick="descargarCSV()">Descargar CSV</button>
+  <button onclick="descargarCSV()">Descargar CSV</button>
+
+  <div class="link-github">
+    <p>Ver el repositorio en GitHub: <a href="https://github.com/USUARIO/formulario-cargas" target="_blank">Abrir repositorio</a></p>
+  </div>
 
   <script>
     const datos = [];
@@ -36,7 +112,6 @@
 
       datos.push({ usuario, caso, comentario });
       actualizarTabla();
-
       this.reset();
     });
 
@@ -56,10 +131,11 @@
       const url = URL.createObjectURL(blob);
       const a = document.createElement('a');
       a.href = url;
-      a.download = 'cargas_diarias.csv';
+      a.download = 'carga_diaria.csv';
       a.click();
       URL.revokeObjectURL(url);
     }
   </script>
 </body>
 </html>
+
