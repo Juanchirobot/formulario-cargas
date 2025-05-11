@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <title>Formulario de Cargas</title>
+  <style>
+    body { font-family: sans-serif; padding: 20px; }
+    table, th, td { border: 1px solid #ccc; border-collapse: collapse; padding: 5px; }
+  </style>
+</head>
+<body>
+  <h2>Formulario de carga</h2>
+  <form id="formulario">
+    <label>Usuario: <input type="text" id="usuario" required></label><br><br>
+    <label>Caso: <input type="text" id="caso" required></label><br><br>
+    <label>Comentario: <input type="text" id="comentario"></label><br><br>
+    <button type="submit">Agregar</button>
+  </form>
+
+  <h3>Datos ingresados:</h3>
+  <table id="tabla">
+    <thead><tr><th>Usuario</th><th>Caso</th><th>Comentario</th></tr></thead>
+    <tbody></tbody>
+  </table>
+
+  <br><button onclick="descargarCSV()">Descargar CSV</button>
+
+  <script>
+    const datos = [];
+
+    document.getElementById('formulario').addEventListener('submit', function(e) {
+      e.preventDefault();
+      const usuario = document.getElementById('usuario').value;
+      const caso = document.getElementById('caso').value;
+      const comentario = document.getElementById('comentario').value;
+
+      datos.push({ usuario, caso, comentario });
+      actualizarTabla();
+
+      this.reset();
+    });
+
+    function actualizarTabla() {
+      const tbody = document.querySelector('#tabla tbody');
+      tbody.innerHTML = '';
+      datos.forEach(d => {
+        const fila = `<tr><td>${d.usuario}</td><td>${d.caso}</td><td>${d.comentario}</td></tr>`;
+        tbody.insertAdjacentHTML('beforeend', fila);
+      });
+    }
+
+    function descargarCSV() {
+      const filas = [['Usuario', 'Caso', 'Comentario'], ...datos.map(d => [d.usuario, d.caso, d.comentario])];
+      const csv = filas.map(fila => fila.map(v => `"${v}"`).join(',')).join('\n');
+      const blob = new Blob([csv], { type: 'text/csv' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'cargas_diarias.csv';
+      a.click();
+      URL.revokeObjectURL(url);
+    }
+  </script>
+</body>
+</html>
