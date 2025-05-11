@@ -1,117 +1,146 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8">
-  <title>Formulario y Vista de Histórico</title>
+  <meta charset="UTF-8" />
+  <title>Vista de Casos - SharePoint Style</title>
   <style>
     body {
-      font-family: Arial, sans-serif;
-      margin: 40px auto;
-      max-width: 800px;
-      padding: 20px;
-      background-color: #f9f9f9;
-      border-radius: 10px;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background-color: #f3f2f1;
+      margin: 0;
+      padding: 0;
     }
 
-    h1 {
+    header {
+      background-color: #0078d4;
+      color: white;
+      padding: 20px;
       text-align: center;
-      color: #333;
     }
 
-    form {
-      background: #fff;
-      padding: 20px;
-      border-radius: 10px;
-      box-shadow: 0 0 5px rgba(0,0,0,0.1);
-      margin-bottom: 30px;
+    main {
+      padding: 30px;
+      max-width: 1000px;
+      margin: auto;
+      background: white;
+      border-radius: 8px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.05);
     }
 
-    label {
-      display: block;
-      margin: 15px 0 5px;
-      font-weight: bold;
-    }
-
-    input, textarea {
-      width: 100%;
-      padding: 8px;
-      border-radius: 5px;
-      border: 1px solid #ccc;
-    }
-
-    button {
-      margin-top: 15px;
-      padding: 10px 15px;
-      background-color: #007bff;
+    .btn {
+      background-color: #0078d4;
       color: white;
       border: none;
-      font-size: 16px;
-      border-radius: 5px;
+      padding: 10px 20px;
+      border-radius: 4px;
       cursor: pointer;
+      font-size: 14px;
+      margin-bottom: 20px;
     }
 
-    button:hover {
-      background-color: #0056b3;
+    .btn:hover {
+      background-color: #005a9e;
     }
 
     table {
       width: 100%;
       border-collapse: collapse;
-      margin-top: 20px;
+      margin-top: 10px;
     }
 
     th, td {
-      border: 1px solid #ccc;
-      padding: 8px;
       text-align: left;
+      padding: 10px;
+      border-bottom: 1px solid #ddd;
     }
 
     th {
-      background-color: #eee;
+      background-color: #f3f2f1;
+      font-weight: 600;
     }
 
-    .section-title {
-      margin-top: 40px;
-      font-size: 20px;
-      color: #444;
-      border-bottom: 1px solid #ddd;
-      padding-bottom: 5px;
+    #formularioContainer {
+      display: none;
+      margin-top: 30px;
+      padding: 20px;
+      border: 1px solid #ccc;
+      background-color: #fafafa;
+      border-radius: 8px;
+    }
+
+    label {
+      display: block;
+      margin-top: 15px;
+      font-weight: 600;
+    }
+
+    input, textarea {
+      width: 100%;
+      padding: 8px;
+      margin-top: 5px;
+      border-radius: 4px;
+      border: 1px solid #ccc;
+    }
+
+    .footer-buttons {
+      margin-top: 20px;
+    }
+
+    .footer-buttons button {
+      margin-right: 10px;
     }
   </style>
 </head>
 <body>
 
-  <h1>Formulario de Carga</h1>
+  <header>
+    <h1>Lista de Casos - Vista estilo SharePoint</h1>
+  </header>
 
-  <form id="formulario">
-    <label for="usuario">Usuario</label>
-    <input type="text" id="usuario" required>
+  <main>
+    <button class="btn" onclick="toggleFormulario()">➕ Nuevo registro</button>
 
-    <label for="caso">Caso</label>
-    <input type="text" id="caso" required>
+    <!-- Tabla histórica -->
+    <table id="tabla">
+      <thead>
+        <tr>
+          <th>Usuario</th>
+          <th>Caso</th>
+          <th>Comentario</th>
+        </tr>
+      </thead>
+      <tbody></tbody>
+    </table>
 
-    <label for="comentario">Comentario</label>
-    <textarea id="comentario" rows="3"></textarea>
+    <!-- Formulario oculto -->
+    <div id="formularioContainer">
+      <h3>Formulario de Carga</h3>
+      <form id="formulario">
+        <label for="usuario">Usuario</label>
+        <input type="text" id="usuario" required>
 
-    <button type="submit">Agregar a tabla</button>
-  </form>
+        <label for="caso">Caso</label>
+        <input type="text" id="caso" required>
 
-  <button onclick="descargarCSV()">Descargar CSV</button>
+        <label for="comentario">Comentario</label>
+        <textarea id="comentario" rows="3"></textarea>
 
-  <div class="section-title">Vista del histórico (desde GitHub)</div>
-  <table id="tabla">
-    <thead>
-      <tr>
-        <th>Usuario</th>
-        <th>Caso</th>
-        <th>Comentario</th>
-      </tr>
-    </thead>
-    <tbody></tbody>
-  </table>
+        <div class="footer-buttons">
+          <button type="submit" class="btn">Agregar</button>
+          <button type="button" class="btn" onclick="toggleFormulario()">Cancelar</button>
+          <button type="button" class="btn" onclick="descargarCSV()">Descargar CSV</button>
+        </div>
+      </form>
+    </div>
+  </main>
 
   <script>
     const datos = [];
+
+    function toggleFormulario() {
+      const container = document.getElementById('formularioContainer');
+      container.style.display = container.style.display === 'none' ? 'block' : 'none';
+    }
 
     document.getElementById('formulario').addEventListener('submit', function(e) {
       e.preventDefault();
@@ -122,6 +151,7 @@
       datos.push({ usuario, caso, comentario });
       actualizarTabla();
       this.reset();
+      toggleFormulario();
     });
 
     function actualizarTabla() {
@@ -150,9 +180,9 @@
       try {
         const response = await fetch(url);
         const text = await response.text();
-        const rows = text.trim().split('\n').slice(1); // omitir encabezado
+        const rows = text.trim().split('\n').slice(1);
         rows.forEach(row => {
-          const [usuario, caso, comentario] = row.split(',').map(val => val.replace(/(^"|"$)/g, ''));
+          const [usuario, caso, comentario] = row.split(',').map(v => v.replace(/(^"|"$)/g, ''));
           datos.push({ usuario, caso, comentario });
         });
         actualizarTabla();
