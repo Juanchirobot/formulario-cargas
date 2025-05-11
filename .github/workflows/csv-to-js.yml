@@ -1,0 +1,37 @@
+name: Convertir CSV a JS
+
+on:
+  push:
+    paths:
+      - 'historico_carga.csv'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v3
+
+      - name: Configurar Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+
+      - name: Instalar csvtojson
+        run: npm install -g csvtojson
+
+      - name: Convertir CSV a JS
+        run: |
+          csvtojson historico_carga.csv > temp.json
+          echo "window.dataHistorica = " > datos.js
+          cat temp.json >> datos.js
+          rm temp.json
+
+      - name: Subir archivo actualizado
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add datos.js
+          git commit -m "Actualizar datos.js desde historico_carga.csv"
+          git push
