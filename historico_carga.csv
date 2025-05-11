@@ -1,5 +1,7 @@
-"Usuario","Caso","Comentario"
-"Juanchi","001","mira vos"
-"Francisco","001","Pruebas de descarga historica"
-"Fernando","1212","qwqw"
-"1","1","2"
+Usuario,Fecha,Caso,Descripción,Estado,Prioridad,Tipo de Riesgo,Canal de Detección,Monto Sospechoso,Observaciones
+analista1,2025-05-10,CASO-001,Intento de phishing,Pendiente,Alta,Ingeniería Social,Correo Electrónico,12000,Requiere verificación de origen
+analista2,2025-05-10,CASO-002,Transferencia inusual,En revisión,Media,Transaccional,Banca Web,4800,Cliente con historial limpio
+analista3,2025-05-10,CASO-003,Múltiples accesos fallidos,Finalizado,Baja,Acceso Ilegítimo,App Móvil,0,Se bloqueó automáticamente
+analista1,2025-05-11,CASO-004,Compra con tarjeta clonada,En revisión,Alta,Fraude con Tarjeta,E-commerce,7600,Cliente ya notificado
+analista2,2025-05-11,CASO-005,Cambio de dispositivo sospechoso,Pendiente,Media,Dispositivo Nuevo,Web Corporativa,0,Pendiente validación biométrica
+analista3,2025-05-11,CASO-006,Transacción a país de alto riesgo,Finalizado,Alta,Geolocalización Internacional,App Móvil,15000,Derivado a Legal
