@@ -18,6 +18,7 @@
       <input type="text" id="busqueda" placeholder="Buscar por analista..." oninput="filtrarTabla()">
       <button class="btn" onclick="abrirGraficos()">📊 Ver Gráficos</button>
       <button class="btn" onclick="descargarCSV()">⬇️ Descargar CSV</button>
+      <button class="btn" onclick="descargarCSVTransacciones()">⬇️ Transacciones Caso</button>
     </div>
 
     <table id="tabla">
@@ -45,17 +46,41 @@
     <span class="close" onclick="cerrarModales()">×</span>
     <h3>Nuevo Caso</h3>
     <form id="formulario">
-      <div class="form-group"><label>Usuario</label><input type="text" id="usuario" required></div>
-      <div class="form-group"><label>Fecha</label><input type="date" id="fecha" required></div>
-      <div class="form-group"><label>Caso</label><input type="text" id="caso" required></div>
-      <div class="form-group"><label>Descripción</label><textarea id="descripcion"></textarea></div>
-      <div class="form-group"><label>Estado</label><input type="text" id="estado" required></div>
-      <div class="form-group"><label>Prioridad</label><input type="text" id="prioridad" required></div>
-      <div class="form-group"><label>Tipo de Riesgo</label><input type="text" id="tipo_riesgo" required></div>
-      <div class="form-group"><label>Canal de Detección</label><input type="text" id="canal_deteccion" required></div>
-      <div class="form-group"><label>Monto Sospechoso</label><input type="number" id="monto_sospechoso" required></div>
-      <div class="form-group"><label>Observaciones</label><textarea id="observaciones"></textarea></div>
-      <button type="submit" class="btn">Agregar</button>
+      <div class="form-grid">
+        <div class="form-group"><label>Usuario</label><input type="text" id="usuario" required></div>
+        <div class="form-group"><label>Fecha</label><input type="date" id="fecha" required></div>
+        <div class="form-group"><label>Caso</label><input type="text" id="caso" required></div>
+        <div class="form-group"><label>Descripción</label><textarea id="descripcion"></textarea></div>
+        <div class="form-group"><label>Estado</label><input type="text" id="estado" required></div>
+        <div class="form-group"><label>Prioridad</label><input type="text" id="prioridad" required></div>
+        <div class="form-group"><label>Tipo de Riesgo</label><input type="text" id="tipo_riesgo" required></div>
+        <div class="form-group"><label>Canal de Detección</label><input type="text" id="canal_deteccion" required></div>
+        <div class="form-group"><label>Monto Sospechoso</label><input type="number" id="monto_sospechoso" required></div>
+        <div class="form-group"><label>Observaciones</label><textarea id="observaciones"></textarea></div>
+      </div>
+
+      <h4>Transacciones Relacionadas</h4>
+      <div id="transacciones-container">
+        <table id="tablaTransacciones">
+          <thead>
+            <tr>
+              <th>CUIL Cliente</th>
+              <th>Fecha</th>
+              <th>CBU Origen</th>
+              <th>CBU Destino</th>
+              <th>Monto</th>
+              <th>Moneda</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+        <button type="button" class="btn secundario" onclick="agregarTransaccion()">➕ Agregar Transacción</button>
+      </div>
+
+      <div style="text-align:right; margin-top: 20px;">
+        <button type="submit" class="btn">✅ Guardar Caso</button>
+      </div>
     </form>
   </div>
 
@@ -66,4 +91,3 @@
   </div>
 </body>
 </html>
-
