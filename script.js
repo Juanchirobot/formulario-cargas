@@ -32,3 +32,10 @@ const opcionesGraficos = {
         }
     }
 };
+function mostrarModal() {
+    document.getElementById('modalFormulario').style.display = 'block';
+}
+
+function cerrarModal() {
+    document.getElementById('modalFormulario').style.display = 'none';
+}
