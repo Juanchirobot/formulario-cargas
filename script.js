@@ -21,3 +21,14 @@ function descargarUpdate() {
     enlace.download = 'update_casos.csv';
     enlace.click();
 }
+const opcionesGraficos = {
+    responsive: true,
+    maintainAspectRatio: false,
+    devicePixelRatio: 2, // Aumenta la resolución
+    scales: {
+        y: {
+            beginAtZero: true,
+            precision: 0
+        }
+    }
+};
