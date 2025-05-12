@@ -141,3 +141,16 @@
 <input type="text" id="busquedaUsuario" placeholder="Buscar por usuario..." oninput="filtrarPorUsuario()" />
 
 <button class="btn" onclick="descargarUpdate()">📥 Descarga Update</button>
+<!-- Botón para abrir el modal -->
+<button class="btn" onclick="mostrarModal()">➕ Nuevo registro</button>
+
+<!-- Modal -->
+<div id="modalFormulario" class="modal">
+    <div class="modal-contenido">
+        <span class="cerrar" onclick="cerrarModal()">&times;</span>
+        <!-- Aquí va tu formulario existente -->
+        <form id="formulario">
+            <!-- Campos del formulario -->
+        </form>
+    </div>
+</div>
