@@ -39,3 +39,37 @@ function mostrarModal() {
 function cerrarModal() {
     document.getElementById('modalFormulario').style.display = 'none';
 }
+
+
+async function cargarCSVDesdeGitHub() {
+    const timestamp = new Date().getTime();
+    const url = `https://raw.githubusercontent.com/Juanchirobot/formulario-cargas/main/historico_carga.csv?nocache=${timestamp}`;
+    try {
+        const response = await fetch(url);
+        const text = await response.text();
+        const rows = text.trim().split('\n').slice(1);
+        rows.forEach(row => {
+            const valores = row.split(',').map(v => v.replace(/(^"|"$)/g, ''));
+            if (valores.length === 10) {
+                const nuevoRegistro = {
+                    usuario: valores[0],
+                    fecha: valores[1],
+                    caso: valores[2],
+                    descripcion: valores[3],
+                    estado: valores[4],
+                    prioridad: valores[5],
+                    tipo_riesgo: valores[6],
+                    canal_deteccion: valores[7],
+                    monto_sospechoso: parseFloat(valores[8]),
+                    observaciones: valores[9]
+                };
+                datos.push(nuevoRegistro);
+                actualizarContadores(nuevoRegistro);
+            }
+        });
+        actualizarTabla();
+    } catch (error) {
+        console.error('Error al cargar el CSV:', error);
+    }
+}
+
