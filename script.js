@@ -6,3 +6,18 @@ function filtrarPorUsuario() {
         fila.style.display = usuario.includes(filtro) ? '' : 'none';
     });
 }
+function descargarUpdate() {
+    if (datos.length === 0) {
+        alert("No hay datos para descargar.");
+        return;
+    }
+
+    const encabezados = Object.keys(datos[0]).join(',');
+    const filas = datos.map(d => Object.values(d).join(',')).join('\n');
+    const contenidoCSV = `${encabezados}\n${filas}`;
+    const blob = new Blob([contenidoCSV], { type: 'text/csv;charset=utf-8;' });
+    const enlace = document.createElement('a');
+    enlace.href = URL.createObjectURL(blob);
+    enlace.download = 'update_casos.csv';
+    enlace.click();
+}
