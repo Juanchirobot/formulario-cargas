@@ -1,403 +1,142 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <meta charset="UTF-8" />
-    <title>Prevención de Fraudes</title>
-    <style>
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: #f3f2f1;
-            margin: 0;
-            padding: 0;
-        }
+  <meta charset="UTF-8" />
+  <title>Prevención de Fraudes</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background-color: #f3f2f1;
+      margin: 0;
+      padding: 0;
+    }
 
-        header {
-            background-color: #0078d4;
-            color: white;
-            padding: 20px;
-            text-align: center;
-        }
+    header {
+      background-color: #0078d4;
+      color: white;
+      padding: 20px;
+      text-align: center;
+    }
 
-        main {
-            padding: 30px;
-            max-width: 1200px;
-            margin: auto;
-            background: white;
-            border-radius: 8px;
-            box-shadow: 0 0 10px rgba(0,0,0,0.05);
-        }
+    main {
+      padding: 30px;
+      max-width: 1200px;
+      margin: auto;
+      background: white;
+      border-radius: 8px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.05);
+    }
 
-        .btn {
-            background-color: #0078d4;
-            color: white;
-            border: none;
-            padding: 10px 20px;
-            border-radius: 4px;
-            cursor: pointer;
-            font-size: 14px;
-            margin-bottom: 20px;
-        }
+    .btn {
+      background-color: #0078d4;
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 14px;
+      margin-bottom: 20px;
+    }
 
-        .btn:hover {
-            background-color: #005a9e;
-        }
+    .btn:hover {
+      background-color: #005a9e;
+    }
 
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 10px;
-        }
+    #buscadorUsuario {
+      margin-bottom: 20px;
+      padding: 10px;
+      width: 100%;
+      max-width: 300px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+    }
 
-        th, td {
-            text-align: left;
-            padding: 10px;
-            border-bottom: 1px solid #ddd;
-        }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 10px;
+    }
 
-        th {
-            background-color: #f3f2f1;
-            font-weight: 600;
-        }
+    th, td {
+      text-align: left;
+      padding: 10px;
+      border-bottom: 1px solid #ddd;
+    }
 
-        #formularioContainer {
-            display: none;
-            margin-top: 30px;
-            padding: 20px;
-            border: 1px solid #ccc;
-            background-color: #fafafa;
-            border-radius: 8px;
-        }
+    th {
+      background-color: #f3f2f1;
+      font-weight: 600;
+    }
 
-        label {
-            display: block;
-            margin-top: 15px;
-            font-weight: 600;
-        }
-
-        input, textarea {
-            width: 100%;
-            padding: 8px;
-            margin-top: 5px;
-            border-radius: 4px;
-            border: 1px solid #ccc;
-        }
-
-        .footer-buttons {
-            margin-top: 20px;
-        }
-
-        .footer-buttons button {
-            margin-right: 10px;
-        }
-
-        #graficosPopUp {
-            display: none;
-            position: fixed;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            background-color: white;
-            padding: 20px;
-            border: 1px solid #ccc;
-            box-shadow: 0 0 10px rgba(0,0,0,0.1);
-            z-index: 1000;
-            border-radius: 8px;
-        }
-
-        #graficosPopUp .grafico-container {
-            margin-bottom: 20px;
-        }
-
-        #cerrarPopUp {
-            position: absolute;
-            top: 10px;
-            right: 10px;
-            cursor: pointer;
-            font-size: 16px;
-            color: #555;
-            border: none;
-            background: none;
-        }
-
-        #overlay {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0, 0, 0, 0.5);
-            z-index: 999;
-        }
-    </style>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    canvas {
+      max-width: 100%;
+      height: auto;
+    }
+  </style>
 </head>
 <body>
+  <header>
+    <h1>Lista de Casos</h1>
+  </header>
 
-    <header>
-        <h1>Lista de Casos</h1>
-    </header>
+  <main>
+    <input type="text" id="buscadorUsuario" placeholder="Buscar por usuario...">
+    <button class="btn" onclick="toggleFormulario()">➕ Nuevo registro</button>
+    <button class="btn" onclick="mostrarGraficos()">📊 Ver Gráficos</button>
+    <button class="btn" onclick="descargarUpdate()">⬇️ Descarga Update</button>
 
-    <main>
-        <button class="btn" onclick="toggleFormulario()">➕ Nuevo registro</button>
-        <button class="btn" onclick="mostrarGraficos()">📊 Ver Gráficos</button>
+    <table id="tabla">
+      <thead>
+        <tr>
+          <th>Usuario</th>
+          <th>Fecha</th>
+          <th>Caso</th>
+          <th>Descripción</th>
+          <th>Estado</th>
+          <th>Prioridad</th>
+          <th>Tipo de Riesgo</th>
+          <th>Canal de Detección</th>
+          <th>Monto Sospechoso</th>
+          <th>Observaciones</th>
+        </tr>
+      </thead>
+      <tbody></tbody>
+    </table>
+  </main>
 
-        <table id="tabla">
-            <thead>
-                <tr>
-                    <th>Usuario</th>
-                    <th>Fecha</th>
-                    <th>Caso</th>
-                    <th>Descripción</th>
-                    <th>Estado</th>
-                    <th>Prioridad</th>
-                    <th>Tipo de Riesgo</th>
-                    <th>Canal de Detección</th>
-                    <th>Monto Sospechoso</th>
-                    <th>Observaciones</th>
-                </tr>
-            </thead>
-            <tbody></tbody>
-        </table>
+  <script>
+    const datos = [];
+    const datosNuevos = [];
 
-        <div id="formularioContainer">
-            <h3>Formulario de Carga</h3>
-            <form id="formulario">
-                <label for="usuario">Usuario</label>
-                <input type="text" id="usuario" required>
+    document.getElementById('buscadorUsuario').addEventListener('input', function(e) {
+      const filtro = e.target.value.toLowerCase();
+      const filas = document.querySelectorAll('#tabla tbody tr');
+      filas.forEach(fila => {
+        const usuario = fila.cells[0].textContent.toLowerCase();
+        fila.style.display = usuario.includes(filtro) ? '' : 'none';
+      });
+    });
 
-                <label for="fecha">Fecha</label>
-                <input type="date" id="fecha" required>
+    function descargarUpdate() {
+      const csv = [
+        ['Usuario', 'Fecha', 'Caso', 'Descripción', 'Estado', 'Prioridad', 'Tipo de Riesgo', 'Canal de Detección', 'Monto Sospechoso', 'Observaciones'],
+        ...datosNuevos.map(d => [
+          d.usuario, d.fecha, d.caso, d.descripcion, d.estado, d.prioridad,
+          d.tipo_riesgo, d.canal_deteccion, d.monto_sospechoso, d.observaciones
+        ])
+      ].map(e => e.join(',')).join('\n');
 
-                <label for="caso">Caso</label>
-                <input type="text" id="caso" required>
-
-                <label for="descripcion">Descripción</label>
-                <textarea id="descripcion" rows="3"></textarea>
-
-                <label for="estado">Estado</label>
-                <input type="text" id="estado" required>
-
-                <label for="prioridad">Prioridad</label>
-                <input type="text" id="prioridad" required>
-
-                <label for="tipo_riesgo">Tipo de Riesgo</label>
-                <input type="text" id="tipo_riesgo" required>
-
-                <label for="canal_deteccion">Canal de Detección</label>
-                <input type="text" id="canal_deteccion" required>
-
-                <label for="monto_sospechoso">Monto Sospechoso</label>
-                <input type="number" id="monto_sospechoso" required>
-
-                <label for="observaciones">Observaciones</label>
-                <textarea id="observaciones" rows="3"></textarea>
-
-                <div class="footer-buttons">
-                    <button type="submit" class="btn">Agregar</button>
-                    <button type="button" class="btn" onclick="toggleFormulario()">Cancelar</button>
-                    <button type="button" class="btn" onclick="descargarCSV()">Descargar CSV</button>
-                </div>
-            </form>
-        </div>
-
-        <div id="overlay"></div>
-        <div id="graficosPopUp">
-            <h2>Visualización de Datos</h2>
-            <div class="grafico-container">
-                <h3>Casos por Tipo de Riesgo</h3>
-                <canvas id="riesgosChart"></canvas>
-            </div>
-            <div class="grafico-container">
-                <h3>Casos por Canal de Detección</h3>
-                <canvas id="canalesChart"></canvas>
-            </div>
-            <div class="grafico-container">
-                <h3>Monto Sospechoso por Tipo de Riesgo</h3>
-                <canvas id="montoRiesgoChart"></canvas>
-            </div>
-            <button id="cerrarPopUp" onclick="cerrarGraficos()">×</button>
-        </div>
-    </main>
-
-    <script>
-        const datos = [];
-        const riesgosContador = {};
-        const canalesContador = {};
-        const montoPorRiesgo = {};
-
-        const overlay = document.getElementById('overlay');
-        const graficosPopUp = document.getElementById('graficosPopUp');
-
-        function toggleFormulario() {
-            const container = document.getElementById('formularioContainer');
-            container.style.display = container.style.display === 'none' ? 'block' : 'none';
-        }
-
-        function mostrarGraficos() {
-            overlay.style.display = 'block';
-            graficosPopUp.style.display = 'block';
-            actualizarGraficosPopUp();
-        }
-
-        function cerrarGraficos() {
-            overlay.style.display = 'none';
-            graficosPopUp.style.display = 'none';
-        }
-
-        document.getElementById('formulario').addEventListener('submit', function(e) {
-            e.preventDefault();
-            const nuevoRegistro = {
-                usuario: document.getElementById('usuario').value,
-                fecha: document.getElementById('fecha').value,
-                caso: document.getElementById('caso').value,
-                descripcion: document.getElementById('descripcion').value,
-                estado: document.getElementById('estado').value,
-                prioridad: document.getElementById('prioridad').value,
-                tipo_riesgo: document.getElementById('tipo_riesgo').value,
-                canal_deteccion: document.getElementById('canal_deteccion').value,
-                monto_sospechoso: parseFloat(document.getElementById('monto_sospechoso').value),
-                observaciones: document.getElementById('observaciones').value
-            };
-
-            datos.push(nuevoRegistro);
-            actualizarTabla();
-            actualizarContadores(nuevoRegistro);
-            this.reset();
-            toggleFormulario();
-        });
-
-        function actualizarTabla() {
-            const tbody = document.querySelector('#tabla tbody');
-            tbody.innerHTML = '';
-            datos.forEach(d => {
-                const fila = `<tr>
-                    <td>${d.usuario}</td>
-                    <td>${d.fecha}</td>
-                    <td>${d.caso}</td>
-                    <td>${d.descripcion}</td>
-                    <td>${d.estado}</td>
-                    <td>${d.prioridad}</td>
-                    <td>${d.tipo_riesgo}</td>
-                    <td>${d.canal_deteccion}</td>
-                    <td>${d.monto_sospechoso}</td>
-                    <td>${d.observaciones}</td>
-                </tr>`;
-                tbody.insertAdjacentHTML('beforeend', fila);
-            });
-        }
-
-        function actualizarContadores(registro) {
-            riesgosContador[registro.tipo_riesgo] = (riesgosContador[registro.tipo_riesgo] || 0) + 1;
-            canalesContador[registro.canal_deteccion] = (canalesContador[registro.canal_deteccion] || 0) + 1;
-            montoPorRiesgo[registro.tipo_riesgo] = (montoPorRiesgo[registro.tipo_riesgo] || 0) + registro.monto_sospechoso;
-        }
-
-        async function cargarCSVDesdeGitHub() {
-            const url = 'https://raw.githubusercontent.com/Juanchirobot/formulario-cargas/main/historico_carga.csv';
-            try {
-                const response = await fetch(url);
-                const text = await response.text();
-                const rows = text.trim().split('\n').slice(1);
-                rows.forEach(row => {
-                    const valores = row.split(',').map(v => v.replace(/(^"|"$)/g, ''));
-                    if (valores.length === 10) {
-                        const nuevoRegistro = {
-                            usuario: valores[0],
-                            fecha: valores[1],
-                            caso: valores[2],
-                            descripcion: valores[3],
-                            estado: valores[4],
-                            prioridad: valores[5],
-                            tipo_riesgo: valores[6],
-                            canal_deteccion: valores[7],
-                            monto_sospechoso: parseFloat(valores[8]),
-                            observaciones: valores[9]
-                        };
-                        datos.push(nuevoRegistro);
-                        actualizarContadores(nuevoRegistro);
-                    }
-                });
-                actualizarTabla();
-            } catch (error) {
-                console.error('Error al cargar el CSV:', error);
-            }
-        }
-
-        function actualizarGraficosPopUp() {
-            // Gráfico de Tipos de Riesgo (Cantidad)
-            const riesgosCanvas = document.getElementById('riesgosChart');
-            new Chart(riesgosCanvas, {
-                type: 'bar',
-                data: {
-                    labels: Object.keys(riesgosContador),
-                    datasets: [{
-                        label: 'Cantidad de Casos',
-                        data: Object.values(riesgosContador),
-                        backgroundColor: 'rgba(255, 99, 132, 0.8)',
-                        borderColor: 'rgba(255, 99, 132, 1)',
-                        borderWidth: 1
-                    }]
-                },
-                options: {
-                    scales: {
-                        y: {
-                            beginAtZero: true,
-                            precision: 0
-                        }
-                    }
-                }
-            });
-
-            // Gráfico de Canales de Detección (Cantidad)
-            const canalesCanvas = document.getElementById('canalesChart');
-            new Chart(canalesCanvas, {
-                type: 'bar',
-                data: {
-                    labels: Object.keys(canalesContador),
-                    datasets: [{
-                        label: 'Cantidad de Casos',
-                        data: Object.values(canalesContador),
-                        backgroundColor: 'rgba(54, 162, 235, 0.8)',
-                        borderColor: 'rgba(54, 162, 235, 1)',
-                        borderWidth: 1
-                    }]
-                },
-                options: {
-                    scales: {
-                        y: {
-                            beginAtZero: true,
-                            precision: 0
-                        }
-                    }
-                }
-            });
-
-            // Gráfico de Monto Sospechoso por Tipo de Riesgo
-            const montoRiesgoCanvas = document.getElementById('montoRiesgoChart');
-            new Chart(montoRiesgoCanvas, {
-                type: 'bar',
-                data: {
-                    labels: Object.keys(montoPorRiesgo),
-                    datasets: [{
-                        label: 'Monto Sospechoso Total',
-                        data: Object.values(montoPorRiesgo),
-                        backgroundColor: 'rgba(255, 206, 86, 0.8)',
-                        borderColor: 'rgba(255, 206, 86, 1)',
-                        borderWidth: 1
-                    }]
-                },
-                options: {
-                    scales: {
-                        y: {
-                            beginAtZero: true
-                        }
-                    }
-                }
-            });
-        }
-
-        cargarCSVDesdeGitHub();
-    </script>
+      const blob = new Blob([csv], { type: 'text/csv' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'update_casos.csv';
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+    }
+  </script>
 </body>
 </html>
+<input type="text" id="busquedaUsuario" placeholder="Buscar por usuario..." oninput="filtrarPorUsuario()" />
+
