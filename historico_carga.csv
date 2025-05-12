@@ -5,4 +5,4 @@ analista3,20458452220,2025-05-10,CASO-003,Múltiples accesos fallidos,Finalizado
 analista1,202958121420,2025-05-11,CASO-004,Compra con tarjeta clonada,En revisión,Alta,Fraude con Tarjeta,E-commerce,7600,Cliente ya notificado
 analista2,202958121420,2025-05-11,CASO-005,Cambio de dispositivo sospechoso,Pendiente,Media,Dispositivo Nuevo,Web Corporativa,0,Pendiente validación biométrica
 analista3,210862541,2025-05-11,CASO-006,Transacción a país de alto riesgo,Finalizado,Alta,Geolocalización Internacional,App Móvil,15000,Derivado a Legal
-Juanchi,20384653791,2025-05-12,CASO-0007,,Transacción a país de alto riesgo,Finalizado,Alta,Transaccional,App Web,12300,
+Juanchi,20384653791,2025-05-12,CASO-0007,Transacción a país de alto riesgo,Finalizado,Alta,Transaccional,App Web,12300,
