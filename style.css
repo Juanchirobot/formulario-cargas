@@ -129,25 +129,3 @@ canvas {
   color: #888;
 }
 
-#tablaTransacciones {
-  width: 100%;
-  border-collapse: collapse;
-  margin-top: 10px;
-}
-
-#tablaTransacciones th,
-#tablaTransacciones td {
-  border: 1px solid #ccc;
-  padding: 6px;
-  text-align: center;
-}
-
-#tablaTransacciones th {
-  background-color: #f0f0f0;
-}
-
-#tablaTransacciones input {
-  width: 100%;
-  box-sizing: border-box;
-}
-
