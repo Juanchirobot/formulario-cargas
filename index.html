@@ -4,142 +4,33 @@
     <meta charset="UTF-8" />
     <title>Prevención de Fraudes</title>
     <style>
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: #f3f2f1;
-            margin: 0;
-            padding: 0;
-        }
-
-        header {
-            background-color: #0078d4;
-            color: white;
-            padding: 20px;
-            text-align: center;
-        }
-
-        main {
-            padding: 30px;
-            max-width: 1200px;
-            margin: auto;
-            background: white;
-            border-radius: 8px;
-            box-shadow: 0 0 10px rgba(0,0,0,0.05);
-        }
-
-        .btn {
-            background-color: #0078d4;
-            color: white;
-            border: none;
-            padding: 10px 20px;
-            border-radius: 4px;
-            cursor: pointer;
-            font-size: 14px;
-            margin-bottom: 20px;
-        }
-
-        .btn:hover {
-            background-color: #005a9e;
-        }
-
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 10px;
-        }
-
-        th, td {
-            text-align: left;
-            padding: 10px;
-            border-bottom: 1px solid #ddd;
-        }
-
-        th {
-            background-color: #f3f2f1;
-            font-weight: 600;
-        }
-
-        #formularioContainer {
-            display: none;
-            margin-top: 30px;
-            padding: 20px;
-            border: 1px solid #ccc;
-            background-color: #fafafa;
-            border-radius: 8px;
-        }
-
-        label {
-            display: block;
-            margin-top: 15px;
-            font-weight: 600;
-        }
-
-        input, textarea {
-            width: 100%;
-            padding: 8px;
-            margin-top: 5px;
-            border-radius: 4px;
-            border: 1px solid #ccc;
-        }
-
-        .footer-buttons {
-            margin-top: 20px;
-        }
-
-        .footer-buttons button {
-            margin-right: 10px;
-        }
-
-        #graficosPopUp {
-            display: none;
-            position: fixed;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            background-color: white;
-            padding: 20px;
-            border: 1px solid #ccc;
-            box-shadow: 0 0 10px rgba(0,0,0,0.1);
-            z-index: 1000;
-            border-radius: 8px;
-        }
-
-        #graficosPopUp .grafico-container {
-            margin-bottom: 20px;
-        }
-
-        #cerrarPopUp {
-            position: absolute;
-            top: 10px;
-            right: 10px;
-            cursor: pointer;
-            font-size: 16px;
-            color: #555;
-            border: none;
-            background: none;
-        }
-
-        #overlay {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0, 0, 0, 0.5);
-            z-index: 999;
-        }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #f3f2f1; margin: 0; padding: 0; }
+        header { background-color: #0078d4; color: white; padding: 20px; text-align: center; }
+        main { padding: 30px; max-width: 1200px; margin: auto; background: white; border-radius: 8px; box-shadow: 0 0 10px rgba(0,0,0,0.05); }
+        .btn { background-color: #0078d4; color: white; border: none; padding: 10px 20px; border-radius: 4px; cursor: pointer; font-size: 14px; margin-bottom: 20px; }
+        .btn:hover { background-color: #005a9e; }
+        table { width: 100%; border-collapse: collapse; margin-top: 10px; }
+        th, td { text-align: left; padding: 10px; border-bottom: 1px solid #ddd; }
+        th { background-color: #f3f2f1; font-weight: 600; }
+        label { display: block; margin-top: 15px; font-weight: 600; }
+        input, textarea { width: 100%; padding: 8px; margin-top: 5px; border-radius: 4px; border: 1px solid #ccc; }
+        .footer-buttons { margin-top: 20px; }
+        .footer-buttons button { margin-right: 10px; }
+        #overlay, #formularioModal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; }
+        #overlay { background-color: rgba(0, 0, 0, 0.5); z-index: 999; }
+        #formularioModal { z-index: 1000; display: flex; align-items: center; justify-content: center; }
+        #formularioContainer { background-color: white; padding: 20px; border-radius: 8px; box-shadow: 0 0 10px rgba(0,0,0,0.1); width: 90%; max-width: 600px; }
+        #busquedaAnalista { margin-bottom: 15px; padding: 10px; width: 300px; border-radius: 4px; border: 1px solid #ccc; }
     </style>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
-
     <header>
         <h1>Lista de Casos</h1>
     </header>
 
     <main>
-        <button class="btn" onclick="toggleFormulario()">➕ Nuevo registro</button>
+        <input type="text" id="busquedaAnalista" placeholder="Buscar por analista (usuario)...">
+        <button class="btn" onclick="abrirModalFormulario()">➕ Nuevo caso</button>
         <button class="btn" onclick="mostrarGraficos()">📊 Ver Gráficos</button>
 
         <table id="tabla">
@@ -159,91 +50,47 @@
             </thead>
             <tbody></tbody>
         </table>
+    </main>
 
+    <div id="overlay"></div>
+    <div id="formularioModal">
         <div id="formularioContainer">
             <h3>Formulario de Carga</h3>
             <form id="formulario">
                 <label for="usuario">Usuario</label>
                 <input type="text" id="usuario" required>
-
                 <label for="fecha">Fecha</label>
                 <input type="date" id="fecha" required>
-
                 <label for="caso">Caso</label>
                 <input type="text" id="caso" required>
-
                 <label for="descripcion">Descripción</label>
                 <textarea id="descripcion" rows="3"></textarea>
-
                 <label for="estado">Estado</label>
                 <input type="text" id="estado" required>
-
                 <label for="prioridad">Prioridad</label>
                 <input type="text" id="prioridad" required>
-
                 <label for="tipo_riesgo">Tipo de Riesgo</label>
                 <input type="text" id="tipo_riesgo" required>
-
                 <label for="canal_deteccion">Canal de Detección</label>
                 <input type="text" id="canal_deteccion" required>
-
                 <label for="monto_sospechoso">Monto Sospechoso</label>
                 <input type="number" id="monto_sospechoso" required>
-
                 <label for="observaciones">Observaciones</label>
                 <textarea id="observaciones" rows="3"></textarea>
-
                 <div class="footer-buttons">
                     <button type="submit" class="btn">Agregar</button>
-                    <button type="button" class="btn" onclick="toggleFormulario()">Cancelar</button>
+                    <button type="button" class="btn" onclick="cerrarModalFormulario()">Cancelar</button>
                     <button type="button" class="btn" onclick="descargarCSV()">Descargar CSV</button>
                 </div>
             </form>
         </div>
+    </div>
 
-        <div id="overlay"></div>
-        <div id="graficosPopUp">
-            <h2>Visualización de Datos</h2>
-            <div class="grafico-container">
-                <h3>Casos por Tipo de Riesgo</h3>
-                <canvas id="riesgosChart"></canvas>
-            </div>
-            <div class="grafico-container">
-                <h3>Casos por Canal de Detección</h3>
-                <canvas id="canalesChart"></canvas>
-            </div>
-            <div class="grafico-container">
-                <h3>Monto Sospechoso por Tipo de Riesgo</h3>
-                <canvas id="montoRiesgoChart"></canvas>
-            </div>
-            <button id="cerrarPopUp" onclick="cerrarGraficos()">×</button>
-        </div>
-    </main>
-
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script>
-        const datos = [];
-        const riesgosContador = {};
-        const canalesContador = {};
-        const montoPorRiesgo = {};
-
+        const datos = [], riesgosContador = {}, canalesContador = {}, montoPorRiesgo = {};
         const overlay = document.getElementById('overlay');
-        const graficosPopUp = document.getElementById('graficosPopUp');
-
-        function toggleFormulario() {
-            const container = document.getElementById('formularioContainer');
-            container.style.display = container.style.display === 'none' ? 'block' : 'none';
-        }
-
-        function mostrarGraficos() {
-            overlay.style.display = 'block';
-            graficosPopUp.style.display = 'block';
-            actualizarGraficosPopUp();
-        }
-
-        function cerrarGraficos() {
-            overlay.style.display = 'none';
-            graficosPopUp.style.display = 'none';
-        }
+        const modal = document.getElementById('formularioModal');
 
         document.getElementById('formulario').addEventListener('submit', function(e) {
             e.preventDefault();
@@ -259,18 +106,28 @@
                 monto_sospechoso: parseFloat(document.getElementById('monto_sospechoso').value),
                 observaciones: document.getElementById('observaciones').value
             };
-
             datos.push(nuevoRegistro);
             actualizarTabla();
             actualizarContadores(nuevoRegistro);
             this.reset();
-            toggleFormulario();
+            cerrarModalFormulario();
         });
+
+        function abrirModalFormulario() {
+            overlay.style.display = 'block';
+            modal.style.display = 'flex';
+        }
+
+        function cerrarModalFormulario() {
+            overlay.style.display = 'none';
+            modal.style.display = 'none';
+        }
 
         function actualizarTabla() {
             const tbody = document.querySelector('#tabla tbody');
             tbody.innerHTML = '';
-            datos.forEach(d => {
+            const filtro = document.getElementById('busquedaAnalista').value.toLowerCase();
+            datos.filter(d => d.usuario.toLowerCase().includes(filtro)).forEach(d => {
                 const fila = `<tr>
                     <td>${d.usuario}</td>
                     <td>${d.fecha}</td>
@@ -286,6 +143,8 @@
                 tbody.insertAdjacentHTML('beforeend', fila);
             });
         }
+
+        document.getElementById('busquedaAnalista').addEventListener('input', actualizarTabla);
 
         function actualizarContadores(registro) {
             riesgosContador[registro.tipo_riesgo] = (riesgosContador[registro.tipo_riesgo] || 0) + 1;
@@ -303,16 +162,9 @@
                     const valores = row.split(',').map(v => v.replace(/(^"|"$)/g, ''));
                     if (valores.length === 10) {
                         const nuevoRegistro = {
-                            usuario: valores[0],
-                            fecha: valores[1],
-                            caso: valores[2],
-                            descripcion: valores[3],
-                            estado: valores[4],
-                            prioridad: valores[5],
-                            tipo_riesgo: valores[6],
-                            canal_deteccion: valores[7],
-                            monto_sospechoso: parseFloat(valores[8]),
-                            observaciones: valores[9]
+                            usuario: valores[0], fecha: valores[1], caso: valores[2], descripcion: valores[3],
+                            estado: valores[4], prioridad: valores[5], tipo_riesgo: valores[6],
+                            canal_deteccion: valores[7], monto_sospechoso: parseFloat(valores[8]), observaciones: valores[9]
                         };
                         datos.push(nuevoRegistro);
                         actualizarContadores(nuevoRegistro);
@@ -324,77 +176,15 @@
             }
         }
 
-        function actualizarGraficosPopUp() {
-            // Gráfico de Tipos de Riesgo (Cantidad)
-            const riesgosCanvas = document.getElementById('riesgosChart');
-            new Chart(riesgosCanvas, {
-                type: 'bar',
-                data: {
-                    labels: Object.keys(riesgosContador),
-                    datasets: [{
-                        label: 'Cantidad de Casos',
-                        data: Object.values(riesgosContador),
-                        backgroundColor: 'rgba(255, 99, 132, 0.8)',
-                        borderColor: 'rgba(255, 99, 132, 1)',
-                        borderWidth: 1
-                    }]
-                },
-                options: {
-                    scales: {
-                        y: {
-                            beginAtZero: true,
-                            precision: 0
-                        }
-                    }
-                }
-            });
+        function mostrarGraficos() {
+            overlay.style.display = 'block';
+            document.getElementById('graficosPopUp').style.display = 'block';
+            actualizarGraficosPopUp();
+        }
 
-            // Gráfico de Canales de Detección (Cantidad)
-            const canalesCanvas = document.getElementById('canalesChart');
-            new Chart(canalesCanvas, {
-                type: 'bar',
-                data: {
-                    labels: Object.keys(canalesContador),
-                    datasets: [{
-                        label: 'Cantidad de Casos',
-                        data: Object.values(canalesContador),
-                        backgroundColor: 'rgba(54, 162, 235, 0.8)',
-                        borderColor: 'rgba(54, 162, 235, 1)',
-                        borderWidth: 1
-                    }]
-                },
-                options: {
-                    scales: {
-                        y: {
-                            beginAtZero: true,
-                            precision: 0
-                        }
-                    }
-                }
-            });
-
-            // Gráfico de Monto Sospechoso por Tipo de Riesgo
-            const montoRiesgoCanvas = document.getElementById('montoRiesgoChart');
-            new Chart(montoRiesgoCanvas, {
-                type: 'bar',
-                data: {
-                    labels: Object.keys(montoPorRiesgo),
-                    datasets: [{
-                        label: 'Monto Sospechoso Total',
-                        data: Object.values(montoPorRiesgo),
-                        backgroundColor: 'rgba(255, 206, 86, 0.8)',
-                        borderColor: 'rgba(255, 206, 86, 1)',
-                        borderWidth: 1
-                    }]
-                },
-                options: {
-                    scales: {
-                        y: {
-                            beginAtZero: true
-                        }
-                    }
-                }
-            });
+        function cerrarGraficos() {
+            overlay.style.display = 'none';
+            document.getElementById('graficosPopUp').style.display = 'none';
         }
 
         cargarCSVDesdeGitHub();
