@@ -124,44 +124,4 @@ canvas {
   top: 15px;
   right: 20px;
   cursor: pointer;
-  font-size: 22px;
-  font-weight: bold;
-  color: #aaa;
-}
-
-.close:hover {
-  color: #000;
-}
-
-.form-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-  gap: 20px;
-  margin-bottom: 30px;
-}
-
-#transacciones-container {
-  margin-top: 20px;
-  overflow-x: auto;
-}
-
-#tablaTransacciones {
-  width: 100%;
-  border-collapse: collapse;
-  margin-bottom: 10px;
-  background: #fcfcfc;
-  border-radius: 8px;
-  overflow: hidden;
-}
-
-#tablaTransacciones th,
-#tablaTransacciones td {
-  border: 1px solid #ddd;
-  padding: 8px;
-  font-size: 13px;
-}
-
-#tablaTransacciones input {
-  width: 100%;
-  box-sizing: border-box;
-}
+  font-size: 22px}
