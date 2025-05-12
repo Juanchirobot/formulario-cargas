@@ -1,68 +1,48 @@
-<!DOCTYPE html>
-<html lang="es">
-<head>
-  <meta charset="UTF-8">
-  <title>Panel de Casos - Prevención de Fraudes</title>
-  <link rel="stylesheet" href="style.css">
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-  <script defer src="script.js"></script>
-</head>
-<body>
-  <header>
-    <h1>Panel de Casos</h1>
-  </header>
+<!-- Modal de carga de datos -->
+<div class="modal" id="dataModal">
+  <div class="modal-content">
+    <span class="close" onclick="closeModal()">&times;</span>
+    <h2>Cargar Datos</h2>
+    <form id="dataForm">
+      <label for="nombre">Nombre:</label>
+      <input type="text" id="nombre" name="nombre" required>
 
-  <main>
-    <div class="actions">
-      <button class="btn" onclick="abrirModalFormulario()">➕ Nuevo Caso</button>
-      <input type="text" id="busqueda" placeholder="Buscar por analista..." oninput="filtrarTabla()">
-      <button class="btn" onclick="abrirGraficos()">📊 Ver Gráficos</button>
-      <button class="btn" onclick="descargarCSV()">⬇️ Descargar CSV</button>
-    </div>
+      <label for="email">Email:</label>
+      <input type="email" id="email" name="email" required>
 
-    <table id="tabla">
-      <thead>
-        <tr>
-          <th>Usuario</th>
-          <th>Fecha</th>
-          <th>Caso</th>
-          <th>Descripción</th>
-          <th>Estado</th>
-          <th>Prioridad</th>
-          <th>Tipo de Riesgo</th>
-          <th>Canal de Detección</th>
-          <th>Monto Sospechoso</th>
-          <th>Observaciones</th>
-        </tr>
-      </thead>
-      <tbody></tbody>
-    </table>
-  </main>
+      <label for="fecha">Fecha:</label>
+      <input type="date" id="fecha" name="fecha" required>
 
-  <div id="overlay" onclick="cerrarModales()"></div>
+      <label for="cuil_origen">CUIL Origen:</label>
+      <input type="text" id="cuil_origen" name="cuil_origen" required>
 
-  <div id="modalFormulario">
-    <span class="close" onclick="cerrarModales()">×</span>
-    <h3>Nuevo Caso</h3>
-    <form id="formulario">
-      <div class="form-group"><label>Usuario</label><input type="text" id="usuario" required></div>
-      <div class="form-group"><label>Fecha</label><input type="date" id="fecha" required></div>
-      <div class="form-group"><label>Caso</label><input type="text" id="caso" required></div>
-      <div class="form-group"><label>Descripción</label><textarea id="descripcion"></textarea></div>
-      <div class="form-group"><label>Estado</label><input type="text" id="estado" required></div>
-      <div class="form-group"><label>Prioridad</label><input type="text" id="prioridad" required></div>
-      <div class="form-group"><label>Tipo de Riesgo</label><input type="text" id="tipo_riesgo" required></div>
-      <div class="form-group"><label>Canal de Detección</label><input type="text" id="canal_deteccion" required></div>
-      <div class="form-group"><label>Monto Sospechoso</label><input type="number" id="monto_sospechoso" required></div>
-      <div class="form-group"><label>Observaciones</label><textarea id="observaciones"></textarea></div>
-      <button type="submit" class="btn">Agregar</button>
+      <!-- Tabla de transacciones -->
+      <h3>Transacciones</h3>
+      <table id="tablaTransacciones">
+        <thead>
+          <tr>
+            <th>Fecha</th>
+            <th>Tipo Transacción</th>
+            <th>CUIL Origen</th>
+            <th>CBU Origen</th>
+            <th>CBU Destino</th>
+            <th>CUIL Destino</th>
+            <th>Monto</th>
+            <th>Acción</th>
+          </tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+      <button type="button" onclick="agregarFilaTransaccion()">Agregar Transacción</button>
+
+      <!-- Aquí podrías agregar conexión a API PERSONA -->
+      <!-- 
+        // Ejemplo:
+        // fetch(`https://api-persona.com/datos?cuil=${cuilOrigen}`).then(...)
+        // y luego completar el campo CBU Origen automáticamente
+      -->
+
+      <button type="submit">Guardar</button>
     </form>
   </div>
-
-  <div id="modalGraficos">
-    <span class="close" onclick="cerrarModales()">×</span>
-    <h3>Gráficos de Casos</h3>
-    <canvas id="chartCasos"></canvas>
-  </div>
-</body>
-</html>
+</div>
