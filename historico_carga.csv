@@ -1,4 +1,4 @@
-ID,Usuario,CUIL_Cliente,Fecha,Caso,Descripción,Estado,Prioridad,Tipo de Riesgo,Canal de Detección,Monto ARS,Observaciones
+ID,Usuario,CUIL_Cliente,Fecha,Caso,Descripción,Estado,Prioridad,Tipo de Riesgo,Canal de Detección,Monto Sospechoso (ARS),Observaciones
 1,analista1,20354864120,2025-05-10,CASO-001,Intento de phishing,Pendiente,Alta,Ingeniería Social,Correo Electrónico,12000,Requiere verificación de origen
 2,analista2,20354452120,2025-05-10,CASO-002,Transferencia inusual,En revisión,Media,Transaccional,Banca Web,4800,Cliente con historial limpio
 3,analista3,20458452220,2025-05-10,CASO-003,Múltiples accesos fallidos,Finalizado,Baja,Acceso Ilegítimo,App Móvil,0,Se bloqueó automáticamente
