@@ -16,14 +16,14 @@ function abrirGraficos() {
   renderizarGraficos();
 }
 
-// Cerrar formularios y gráficos
+// Cerrar formularios
 function cerrarModales() {
   document.getElementById('modalFormulario').style.display = 'none';
   document.getElementById('modalGraficos').style.display = 'none';
   document.getElementById('overlay').style.display = 'none';
 }
 
-// Agregar nueva fila de transacción
+// Agregar fila para transacción
 function agregarTransaccion() {
   const tbody = document.querySelector('#tablaTransacciones tbody');
   const fila = document.createElement('tr');
@@ -44,33 +44,18 @@ function agregarTransaccion() {
   tbody.appendChild(fila);
 }
 
-// Guardar nuevo caso y transacciones
-document.getElementById('formulario').addEventListener('submit', async e => {
+// Guardar nuevo caso
+document.getElementById('formulario').addEventListener('submit', e => {
   e.preventDefault();
 
   const id = contadorID++;
   const usuarioActual = usuario.value;
   const casoActual = caso.value;
   let montoARS = 0;
+  const cotizacion = 1000; // valor fijo de 1 USD = 1000 ARS
 
   const filas = document.querySelectorAll('#tablaTransacciones tbody tr');
 
-  // Si hay USD, obtener cotización online
-  let cotizacion = 0;
-  const hayUSD = Array.from(filas).some(f => f.querySelector('select').value === 'USD');
-
-  if (hayUSD) {
-    try {
-      const res = await fetch('https://api.exchangerate.host/latest?base=USD&symbols=ARS');
-      const json = await res.json();
-      cotizacion = json.rates.ARS;
-    } catch (err) {
-      alert("❌ Error al obtener la cotización del dólar. Intenta nuevamente.");
-      return;
-    }
-  }
-
-  // Cargar transacciones y calcular monto total en ARS
   filas.forEach(f => {
     const inputs = f.querySelectorAll('input');
     const moneda = f.querySelector('select').value;
@@ -91,10 +76,10 @@ document.getElementById('formulario').addEventListener('submit', async e => {
     montoARS += montoConvertido;
   });
 
-  // Guardar caso completo
   datos.push({
     id,
     usuario: usuario.value,
+    cuil_cliente: "", // valor en blanco para los casos nuevos desde formulario
     fecha: fecha.value,
     caso: caso.value,
     descripcion: descripcion.value,
@@ -112,7 +97,7 @@ document.getElementById('formulario').addEventListener('submit', async e => {
   document.querySelector('#tablaTransacciones tbody').innerHTML = '';
 });
 
-// Mostrar casos en la tabla principal
+// Mostrar tabla de casos
 function actualizarTabla() {
   const tbody = document.querySelector('#tabla tbody');
   tbody.innerHTML = '';
@@ -134,7 +119,7 @@ function actualizarTabla() {
   });
 }
 
-// Filtro de casos por usuario
+// Filtro de tabla por analista
 function filtrarTabla() {
   const texto = document.getElementById('busqueda').value.toLowerCase();
   const filas = document.querySelectorAll('#tabla tbody tr');
@@ -143,10 +128,14 @@ function filtrarTabla() {
   });
 }
 
-// Descargar archivo CSV de casos
+// Descargar CSV de casos
 function descargarCSV() {
-  const encabezados = ['ID','Usuario','Fecha','Caso','Descripción','Estado','Prioridad','Tipo de Riesgo','Canal de Detección','Monto Sospechoso (ARS)','Observaciones'];
-  const filas = datos.map(d => [d.id, d.usuario, d.fecha, d.caso, d.descripcion, d.estado, d.prioridad, d.tipo_riesgo, d.canal_deteccion, d.monto_sospechoso.toFixed(2), d.observaciones]);
+  const encabezados = ['ID','Usuario','CUIL_Cliente','Fecha','Caso','Descripción','Estado','Prioridad','Tipo de Riesgo','Canal de Detección','Monto Sospechoso (ARS)','Observaciones'];
+  const filas = datos.map(d => [
+    d.id, d.usuario, d.cuil_cliente || '', d.fecha, d.caso, d.descripcion,
+    d.estado, d.prioridad, d.tipo_riesgo, d.canal_deteccion,
+    d.monto_sospechoso.toFixed(2), d.observaciones
+  ]);
   const csv = [encabezados, ...filas].map(f => f.join(",")).join("\n");
   const blob = new Blob([csv], { type: 'text/csv' });
   const url = URL.createObjectURL(blob);
@@ -157,10 +146,12 @@ function descargarCSV() {
   URL.revokeObjectURL(url);
 }
 
-// Descargar archivo CSV de transacciones
+// Descargar CSV de transacciones
 function descargarCSVTransacciones() {
   const encabezados = ['Usuario','Caso','CUIL','Fecha','CBU Origen','CBU Destino','Monto','Moneda'];
-  const filas = transacciones.map(t => [t.usuario, t.caso, t.cuil, t.fecha, t.cbu_origen, t.cbu_destino, t.monto, t.moneda]);
+  const filas = transacciones.map(t => [
+    t.usuario, t.caso, t.cuil, t.fecha, t.cbu_origen, t.cbu_destino, t.monto, t.moneda
+  ]);
   const csv = [encabezados, ...filas].map(f => f.join(",")).join("\n");
   const blob = new Blob([csv], { type: 'text/csv' });
   const url = URL.createObjectURL(blob);
@@ -171,40 +162,44 @@ function descargarCSVTransacciones() {
   URL.revokeObjectURL(url);
 }
 
-// Cargar casos iniciales desde GitHub CSV
+// Cargar CSV inicial desde el mismo repo (evita errores 429)
 async function cargarCSVDesdeGitHub() {
-  const url = 'historico_carga.csv';
+  const url = 'historico_carga.csv'; // debe estar en el mismo directorio que index.html
   try {
-    const res = await fetch(url);
-    const text = await res.text();
+    const response = await fetch(url);
+    const text = await response.text();
     const rows = text.trim().split('\n').slice(1);
 
     rows.forEach(row => {
       const campos = row.split(',').map(c => c.replace(/(^"|"$)/g, ''));
-      if (campos.length >= 10) {
+      if (campos.length >= 12) {
         datos.push({
-          id: contadorID++,
-          usuario: campos[0],
-          fecha: campos[1],
-          caso: campos[2],
-          descripcion: campos[3],
-          estado: campos[4],
-          prioridad: campos[5],
-          tipo_riesgo: campos[6],
-          canal_deteccion: campos[7],
-          monto_sospechoso: parseFloat(campos[8]),
-          observaciones: campos[9]
+          id: parseInt(campos[0]),
+          usuario: campos[1],
+          cuil_cliente: campos[2],
+          fecha: campos[3],
+          caso: campos[4],
+          descripcion: campos[5],
+          estado: campos[6],
+          prioridad: campos[7],
+          tipo_riesgo: campos[8],
+          canal_deteccion: campos[9],
+          monto_sospechoso: parseFloat(campos[10]),
+          observaciones: campos[11]
         });
+        if (parseInt(campos[0]) >= contadorID) {
+          contadorID = parseInt(campos[0]) + 1;
+        }
       }
     });
 
     actualizarTabla();
   } catch (err) {
-    console.error("⚠️ Error al cargar el CSV desde GitHub:", err);
+    console.error("⚠️ Error al cargar el CSV desde el repositorio:", err);
   }
 }
 
-// Crear gráfico de barras por caso/fecha
+// Renderizar gráfico con mejor calidad
 function renderizarGraficos() {
   const ctx = document.getElementById('chartCasos').getContext('2d');
   const resumen = {};
@@ -223,7 +218,7 @@ function renderizarGraficos() {
       datasets: [{
         label: 'Monto Sospechoso (ARS)',
         data: Object.values(resumen),
-        backgroundColor: 'rgba(0, 128, 128, 0.7)',
+        backgroundColor: 'rgba(0, 128, 128, 0.6)',
         borderColor: 'rgba(0, 128, 128, 1)',
         borderWidth: 1
       }]
@@ -242,12 +237,15 @@ function renderizarGraficos() {
           }
         },
         x: {
-          ticks: { maxRotation: 90, minRotation: 45 }
+          ticks: {
+            maxRotation: 75,
+            autoSkip: false
+          }
         }
       }
     }
   });
 }
 
-// Carga inicial
+// Inicializar
 cargarCSVDesdeGitHub();
