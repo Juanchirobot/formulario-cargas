@@ -1,4 +1,4 @@
-/* Fuente general y colores base */
+/* Fondo general con imagen decorativa */
 body {
   font-family: 'Segoe UI', Tahoma, sans-serif;
   margin: 0;
@@ -12,7 +12,7 @@ body {
   background-color: #eef1f5;
 }
 
-/* Banner principal */
+/* Encabezado con imagen y botones */
 header {
   position: relative;
   background-color: #004d66;
@@ -23,7 +23,7 @@ header {
 .banner {
   width: 100%;
   height: auto;
-  max-height: 120px;
+  max-height: 100px;
   object-fit: contain;
   display: block;
   margin: 0 auto;
@@ -41,7 +41,7 @@ header {
 header h1 {
   margin: 0;
   color: white;
-  font-size: 24px;
+  font-size: 22px;
 }
 
 .header-buttons {
@@ -118,7 +118,7 @@ header h1 {
   z-index: 999;
 }
 
-/* Formulario */
+/* Formularios */
 .form-group {
   margin-bottom: 15px;
 }
@@ -173,7 +173,7 @@ textarea, input[type="text"], input[type="date"], input[type="number"], select {
   box-sizing: border-box;
 }
 
-/* Cierre de modales */
+/* Botón para cerrar modal */
 .close {
   position: absolute;
   top: 15px;
@@ -188,7 +188,7 @@ textarea, input[type="text"], input[type="date"], input[type="number"], select {
   color: #000;
 }
 
-/* Footer con tabla de casos */
+/* Tabla de casos fija abajo */
 footer {
   margin-top: 20px;
   background: rgba(255, 255, 255, 0.92);
@@ -233,7 +233,7 @@ footer {
   font-weight: 600;
 }
 
-/* Gráfico */
+/* Gráficos */
 canvas {
   max-width: 100%;
 }
