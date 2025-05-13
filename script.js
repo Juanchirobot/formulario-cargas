@@ -173,7 +173,7 @@ function descargarCSVTransacciones() {
 
 // Cargar casos iniciales desde GitHub CSV
 async function cargarCSVDesdeGitHub() {
-  const url = 'https://raw.githubusercontent.com/Juanchirobot/formulario-cargas/main/historico_carga.csv';
+  const url = 'historico_carga.csv';
   try {
     const res = await fetch(url);
     const text = await res.text();
