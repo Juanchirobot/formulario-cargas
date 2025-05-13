@@ -196,3 +196,20 @@ canvas {
   width: 100%;
   box-sizing: border-box;
 }
+
+/* Fondo general con imagen decorativa */
+body {
+  background-image: url('background_seguridad.png');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+  background-color: #eef1f5; /* fallback por si no carga */
+}
+
+/* Oscurecer un poco el contenido principal para legibilidad */
+main {
+  background: rgba(255, 255, 255, 0.92); /* blanco semitransparente */
+  backdrop-filter: blur(2px);
+}
+
