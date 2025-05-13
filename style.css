@@ -22,22 +22,11 @@ header {
 
 .banner {
   width: 100%;
-  height: auto;
-  max-height: 220px;
+  height: 120px; /* altura reducida respecto al original */
   object-fit: cover;
   object-position: center;
   display: block;
-  margin: 0 auto;
-  border-bottom: 2px solid #004d66;
 }
-
-/* Ajuste suave en pantallas pequeñas */
-@media (max-width: 768px) {
-  .banner {
-    max-height: 140px;
-  }
-}
-
 
 .header-content {
   position: absolute;
