@@ -23,11 +23,21 @@ header {
 .banner {
   width: 100%;
   height: auto;
-  max-height: 100px;
-  object-fit: contain;
+  max-height: 220px;
+  object-fit: cover;
+  object-position: center;
   display: block;
   margin: 0 auto;
+  border-bottom: 2px solid #004d66;
 }
+
+/* Ajuste suave en pantallas pequeñas */
+@media (max-width: 768px) {
+  .banner {
+    max-height: 140px;
+  }
+}
+
 
 .header-content {
   position: absolute;
