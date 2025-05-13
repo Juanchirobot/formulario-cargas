@@ -3,27 +3,25 @@ const transacciones = [];
 let chartInstance;
 let contadorID = 1;
 
-// Mostrar formulario de nuevo caso
+// Mostrar modales
 function abrirModalFormulario() {
   document.getElementById('modalFormulario').style.display = 'block';
   document.getElementById('overlay').style.display = 'block';
 }
 
-// Mostrar modal de gráficos
 function abrirGraficos() {
   document.getElementById('modalGraficos').style.display = 'block';
   document.getElementById('overlay').style.display = 'block';
   renderizarGraficos();
 }
 
-// Cerrar formularios
 function cerrarModales() {
   document.getElementById('modalFormulario').style.display = 'none';
   document.getElementById('modalGraficos').style.display = 'none';
   document.getElementById('overlay').style.display = 'none';
 }
 
-// Agregar fila para transacción
+// Agregar fila de transacción
 function agregarTransaccion() {
   const tbody = document.querySelector('#tablaTransacciones tbody');
   const fila = document.createElement('tr');
@@ -52,7 +50,7 @@ document.getElementById('formulario').addEventListener('submit', e => {
   const usuarioActual = usuario.value;
   const casoActual = caso.value;
   let montoARS = 0;
-  const cotizacion = 1000; // valor fijo de 1 USD = 1000 ARS
+  const cotizacion = 1000; // valor fijo para conversión
 
   const filas = document.querySelectorAll('#tablaTransacciones tbody tr');
 
@@ -79,7 +77,7 @@ document.getElementById('formulario').addEventListener('submit', e => {
   datos.push({
     id,
     usuario: usuario.value,
-    cuil_cliente: "", // valor en blanco para los casos nuevos desde formulario
+    cuil_cliente: "", // vacío al crear desde formulario
     fecha: fecha.value,
     caso: caso.value,
     descripcion: descripcion.value,
@@ -103,7 +101,6 @@ function actualizarTabla() {
   tbody.innerHTML = '';
   datos.forEach(d => {
     tbody.innerHTML += `
-    tbody.innerHTML += `
       <tr>
         <td>${d.id}</td>
         <td>${d.usuario}</td>
@@ -121,16 +118,17 @@ function actualizarTabla() {
   });
 }
 
-// Filtro de tabla por analista
-function filtrarTabla() {
+// Filtro por CUIL Cliente
+function filtrarTablaPorCUIL() {
   const texto = document.getElementById('busqueda').value.toLowerCase();
   const filas = document.querySelectorAll('#tabla tbody tr');
-  filas.forEach(f => {
-    f.style.display = f.cells[1].textContent.toLowerCase().includes(texto) ? '' : 'none';
+  filas.forEach(fila => {
+    const cuil = fila.cells[2].textContent.toLowerCase();
+    fila.style.display = cuil.includes(texto) ? '' : 'none';
   });
 }
 
-// Descargar CSV de casos
+// Descargar casos CSV
 function descargarCSV() {
   const encabezados = ['ID','Usuario','CUIL_Cliente','Fecha','Caso','Descripción','Estado','Prioridad','Tipo de Riesgo','Canal de Detección','Monto Sospechoso (ARS)','Observaciones'];
   const filas = datos.map(d => [
@@ -148,7 +146,7 @@ function descargarCSV() {
   URL.revokeObjectURL(url);
 }
 
-// Descargar CSV de transacciones
+// Descargar transacciones CSV
 function descargarCSVTransacciones() {
   const encabezados = ['Usuario','Caso','CUIL','Fecha','CBU Origen','CBU Destino','Monto','Moneda'];
   const filas = transacciones.map(t => [
@@ -164,12 +162,12 @@ function descargarCSVTransacciones() {
   URL.revokeObjectURL(url);
 }
 
-// Cargar CSV inicial desde el mismo repo (evita errores 429)
+// Cargar CSV desde GitHub Pages (local)
 async function cargarCSVDesdeGitHub() {
-  const url = 'historico_carga.csv'; // debe estar en el mismo directorio que index.html
+  const url = 'historico_carga.csv';
   try {
-    const response = await fetch(url);
-    const text = await response.text();
+    const res = await fetch(url);
+    const text = await res.text();
     const rows = text.trim().split('\n').slice(1);
 
     rows.forEach(row => {
@@ -197,11 +195,11 @@ async function cargarCSVDesdeGitHub() {
 
     actualizarTabla();
   } catch (err) {
-    console.error("⚠️ Error al cargar el CSV desde el repositorio:", err);
+    console.error("⚠️ Error al cargar el CSV:", err);
   }
 }
 
-// Renderizar gráfico con mejor calidad
+// Gráfico de barras
 function renderizarGraficos() {
   const ctx = document.getElementById('chartCasos').getContext('2d');
   const resumen = {};
@@ -248,14 +246,6 @@ function renderizarGraficos() {
     }
   });
 }
-function filtrarTablaPorCUIL() {
-  const texto = document.getElementById('busqueda').value.toLowerCase();
-  const filas = document.querySelectorAll('#tabla tbody tr');
 
-  filas.forEach(fila => {
-    const cuil = fila.cells[2].textContent.toLowerCase();
-    fila.style.display = cuil.includes(texto) ? '' : 'none';
-  });
-}
-// Inicializar
+// Ejecutar carga al iniciar
 cargarCSVDesdeGitHub();
