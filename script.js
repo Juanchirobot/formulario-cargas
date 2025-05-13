@@ -103,9 +103,11 @@ function actualizarTabla() {
   tbody.innerHTML = '';
   datos.forEach(d => {
     tbody.innerHTML += `
+    tbody.innerHTML += `
       <tr>
         <td>${d.id}</td>
         <td>${d.usuario}</td>
+        <td>${d.cuil_cliente}</td>
         <td>${d.fecha}</td>
         <td>${d.caso}</td>
         <td>${d.descripcion}</td>
@@ -251,10 +253,9 @@ function filtrarTablaPorCUIL() {
   const filas = document.querySelectorAll('#tabla tbody tr');
 
   filas.forEach(fila => {
-    const cuilCliente = datos.find(d => d.id == fila.cells[0].textContent)?.cuil_cliente?.toLowerCase() || '';
-    fila.style.display = cuilCliente.includes(texto) ? '' : 'none';
+    const cuil = fila.cells[2].textContent.toLowerCase();
+    fila.style.display = cuil.includes(texto) ? '' : 'none';
   });
 }
-
 // Inicializar
 cargarCSVDesdeGitHub();
