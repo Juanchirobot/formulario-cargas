@@ -1,28 +1,23 @@
-/* Paleta: fondo claro + azul petróleo + acento verde */
+/* Fuente general y colores base */
 body {
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-  background-color: #eef1f5;
+  font-family: 'Segoe UI', Tahoma, sans-serif;
   margin: 0;
   padding: 0;
   color: #1a1a1a;
+  background-image: url('background_seguridad.png');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+  background-color: #eef1f5;
 }
 
+/* Banner principal */
 header {
-  background-color: #004d66;
-  color: white;
-  padding: 0;
-  text-align: center;
   position: relative;
-}
-
-header h1 {
-  margin: 0;
-  padding: 20px;
-  font-size: 24px;
-  background-color: rgba(0, 0, 0, 0.6);
-  position: absolute;
-  top: 0;
-  width: 100%;
+  background-color: #004d66;
+  text-align: center;
+  padding-bottom: 20px;
 }
 
 .banner {
@@ -32,27 +27,30 @@ header h1 {
   display: block;
 }
 
-/* Área principal */
-main {
-  padding: 30px;
-  max-width: 1300px;
-  margin: 30px auto;
-  background: white;
-  border-radius: 12px;
-  box-shadow: 0 2px 12px rgba(0,0,0,0.1);
+.header-content {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  padding: 20px 0;
+  background: rgba(0, 0, 0, 0.5);
 }
 
-/* Barra de botones */
-.actions {
+header h1 {
+  margin: 0;
+  color: white;
+  font-size: 24px;
+}
+
+.header-buttons {
+  margin-top: 10px;
   display: flex;
+  justify-content: center;
   flex-wrap: wrap;
   gap: 10px;
-  margin-bottom: 20px;
-  justify-content: space-between;
-  align-items: center;
 }
 
-/* Botones */
+/* Botones generales */
 .btn {
   background-color: #008080;
   color: white;
@@ -74,35 +72,22 @@ main {
   border: 1px solid #bcd;
 }
 
-input[type="text"], input[type="date"], input[type="number"], textarea, select {
-  padding: 8px;
-  border: 1px solid #ccc;
-  border-radius: 6px;
-  font-size: 14px;
-  width: 100%;
-  box-sizing: border-box;
+/* Contenedor de búsqueda centrado */
+.busqueda-container {
+  display: flex;
+  justify-content: center;
+  padding: 30px 0 10px;
 }
 
-/* Tablas */
-table {
-  width: 100%;
-  border-collapse: collapse;
-  margin-top: 20px;
-  font-size: 14px;
-}
-
-th, td {
-  border: 1px solid #dee2e6;
+#busqueda {
   padding: 10px;
-  text-align: left;
+  font-size: 16px;
+  width: 300px;
+  border-radius: 8px;
+  border: 1px solid #ccc;
 }
 
-th {
-  background-color: #f1f9fa;
-  font-weight: 600;
-}
-
-/* Formularios modales */
+/* Modales */
 #modalFormulario, #modalGraficos {
   display: none;
   position: fixed;
@@ -120,7 +105,6 @@ th {
   overflow-y: auto;
 }
 
-/* Fondo gris oscuro detrás del modal */
 #overlay {
   display: none;
   position: fixed;
@@ -132,7 +116,7 @@ th {
   z-index: 999;
 }
 
-/* Estructura del formulario */
+/* Formulario */
 .form-group {
   margin-bottom: 15px;
 }
@@ -143,30 +127,20 @@ label {
   margin-bottom: 6px;
 }
 
-canvas {
-  max-width: 100%;
-}
-
-/* Botón de cerrar modal */
-.close {
-  position: absolute;
-  top: 15px;
-  right: 20px;
-  cursor: pointer;
-  font-size: 22px;
-  font-weight: bold;
-  color: #aaa;
-}
-
-.close:hover {
-  color: #000;
-}
-
 .form-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
   gap: 20px;
   margin-bottom: 30px;
+}
+
+textarea, input[type="text"], input[type="date"], input[type="number"], select {
+  width: 100%;
+  padding: 8px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  font-size: 14px;
+  box-sizing: border-box;
 }
 
 /* Tabla de transacciones */
@@ -197,19 +171,67 @@ canvas {
   box-sizing: border-box;
 }
 
-/* Fondo general con imagen decorativa */
-body {
-  background-image: url('background_seguridad.png');
-  background-size: cover;
-  background-position: center;
-  background-repeat: no-repeat;
-  background-attachment: fixed;
-  background-color: #eef1f5; /* fallback por si no carga */
+/* Cierre de modales */
+.close {
+  position: absolute;
+  top: 15px;
+  right: 20px;
+  cursor: pointer;
+  font-size: 22px;
+  font-weight: bold;
+  color: #aaa;
 }
 
-/* Oscurecer un poco el contenido principal para legibilidad */
-main {
-  background: rgba(255, 255, 255, 0.92); /* blanco semitransparente */
+.close:hover {
+  color: #000;
+}
+
+/* Footer con tabla de casos */
+footer {
+  margin-top: 20px;
+  background: rgba(255, 255, 255, 0.92);
   backdrop-filter: blur(2px);
+  padding: 20px 0;
 }
 
+.tabla-casos {
+  max-width: 1300px;
+  margin: 0 auto;
+  padding: 0 20px;
+}
+
+.tabla-casos h2 {
+  text-align: left;
+  margin-bottom: 10px;
+  font-weight: 600;
+}
+
+.tabla-scroll {
+  max-height: 400px;
+  overflow-y: auto;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  background-color: white;
+}
+
+#tabla {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 14px;
+}
+
+#tabla th, #tabla td {
+  border: 1px solid #e0e0e0;
+  padding: 10px;
+  text-align: left;
+}
+
+#tabla th {
+  background-color: #f1f9fa;
+  font-weight: 600;
+}
+
+/* Gráfico */
+canvas {
+  max-width: 100%;
+}
