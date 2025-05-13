@@ -9,40 +9,24 @@
   <script defer src="script.js"></script>
 </head>
 <body>
+  <!-- Banner con fondo e imagen -->
   <header>
-    <!-- Banner visual opcional -->
-    <img src="banner_fraude.png" alt="Banner Prevención de Fraudes" class="banner">
-    <h1>Panel de Casos</h1>
+    <img src="banner_fraude.png" alt="Banner Prevención de Fraudes" class="banner" />
+    <div class="header-content">
+      <h1>Panel de Casos</h1>
+      <div class="header-buttons">
+        <button class="btn" onclick="abrirModalFormulario()">➕ Nuevo Caso</button>
+        <button class="btn" onclick="abrirGraficos()">📊 Ver Gráficos</button>
+        <button class="btn" onclick="descargarCSV()">⬇️ Descargar CSV</button>
+        <button class="btn" onclick="descargarCSVTransacciones()">⬇️ Transacciones</button>
+      </div>
+    </div>
   </header>
 
-  <main>
-    <div class="actions">
-      <button class="btn" onclick="abrirModalFormulario()">➕ Nuevo Caso</button>
-      <input type="text" id="busqueda" placeholder="Buscar por analista..." oninput="filtrarTabla()" />
-      <button class="btn" onclick="abrirGraficos()">📊 Ver Gráficos</button>
-      <button class="btn" onclick="descargarCSV()">⬇️ Descargar CSV</button>
-      <button class="btn" onclick="descargarCSVTransacciones()">⬇️ Transacciones Caso</button>
-    </div>
-
-    <table id="tabla">
-      <thead>
-        <tr>
-          <th>ID</th>
-          <th>Usuario</th>
-          <th>Fecha</th>
-          <th>Caso</th>
-          <th>Descripción</th>
-          <th>Estado</th>
-          <th>Prioridad</th>
-          <th>Tipo de Riesgo</th>
-          <th>Canal de Detección</th>
-          <th>Monto Sospechoso (ARS)</th>
-          <th>Observaciones</th>
-        </tr>
-      </thead>
-      <tbody></tbody>
-    </table>
-  </main>
+  <!-- Buscador centrado -->
+  <section class="busqueda-container">
+    <input type="text" id="busqueda" placeholder="🔍 Buscar por CUIL Cliente..." oninput="filtrarTablaPorCUIL()" />
+  </section>
 
   <!-- Fondo oscuro -->
   <div id="overlay" onclick="cerrarModales()"></div>
@@ -95,6 +79,32 @@
     <h3>Gráficos de Casos</h3>
     <canvas id="chartCasos"></canvas>
   </div>
+
+  <!-- Tabla de casos al final -->
+  <footer>
+    <div class="tabla-casos">
+      <h2>📋 Tabla de Casos</h2>
+      <div class="tabla-scroll">
+        <table id="tabla">
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Usuario</th>
+              <th>Fecha</th>
+              <th>Caso</th>
+              <th>Descripción</th>
+              <th>Estado</th>
+              <th>Prioridad</th>
+              <th>Tipo de Riesgo</th>
+              <th>Canal de Detección</th>
+              <th>Monto Sospechoso (ARS)</th>
+              <th>Observaciones</th>
+            </tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+      </div>
+    </div>
+  </footer>
 </body>
 </html>
-
