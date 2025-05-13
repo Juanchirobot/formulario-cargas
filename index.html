@@ -9,7 +9,7 @@
   <script defer src="script.js"></script>
 </head>
 <body>
-  <!-- Banner con fondo e imagen -->
+  <!-- Banner superior -->
   <header>
     <img src="banner_fraude.png" alt="Banner Prevención de Fraudes" class="banner" />
     <div class="header-content">
@@ -25,13 +25,18 @@
 
   <!-- Buscador centrado -->
   <section class="busqueda-container">
-    <input type="text" id="busqueda" placeholder="🔍 Buscar por CUIL Cliente..." oninput="filtrarTablaPorCUIL()" />
+    <input
+      type="text"
+      id="busqueda"
+      placeholder="🔍 Buscar por CUIL Cliente..."
+      oninput="filtrarTablaPorCUIL()"
+    />
   </section>
 
-  <!-- Fondo oscuro -->
+  <!-- Capa oscura -->
   <div id="overlay" onclick="cerrarModales()"></div>
 
-  <!-- Modal de formulario -->
+  <!-- Modal de carga -->
   <div id="modalFormulario">
     <span class="close" onclick="cerrarModales()">×</span>
     <h3>Nuevo Caso</h3>
@@ -80,7 +85,7 @@
     <canvas id="chartCasos"></canvas>
   </div>
 
-  <!-- Tabla de casos al final -->
+  <!-- Tabla fija abajo -->
   <footer>
     <div class="tabla-casos">
       <h2>📋 Tabla de Casos</h2>
