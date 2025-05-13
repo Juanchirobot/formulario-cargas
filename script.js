@@ -246,6 +246,15 @@ function renderizarGraficos() {
     }
   });
 }
+function filtrarTablaPorCUIL() {
+  const texto = document.getElementById('busqueda').value.toLowerCase();
+  const filas = document.querySelectorAll('#tabla tbody tr');
+
+  filas.forEach(fila => {
+    const cuilCliente = datos.find(d => d.id == fila.cells[0].textContent)?.cuil_cliente?.toLowerCase() || '';
+    fila.style.display = cuilCliente.includes(texto) ? '' : 'none';
+  });
+}
 
 // Inicializar
 cargarCSVDesdeGitHub();
