@@ -137,6 +137,7 @@ function parsearFecha(f) {
   return isNaN(fecha.getTime()) ? null : fecha;
 }
 
+// 🔁 REEMPLAZAR DESDE AQUÍ
 function cargarCSVDesdeGitHub() {
   fetch("historico_carga_liviano.csv")
     .then(r => r.text())
@@ -145,13 +146,14 @@ function cargarCSVDesdeGitHub() {
       rows.forEach(row => {
         const c = row.split(",");
         if (c.length >= 12) {
-          const fechaValida = parsearFecha(c[3]); // posición 3: Fecha
-          if (!fechaValida) return;
+          const fechaFormateada = new Date(c[3]);
+          if (isNaN(fechaFormateada.getTime())) return;
+
           datos.push({
             id: parseInt(c[0]),
             usuario: c[1],
-            cuil: c[2], // posición 2: CUIL Cliente
-            fecha: c[3],
+            cuil: c[2],
+            fecha: c[3], // mantiene el string original con formato válido YYYY-MM-DD
             caso: c[4],
             descripcion: c[5],
             estado: c[6],
@@ -161,15 +163,20 @@ function cargarCSVDesdeGitHub() {
             monto_sospechoso: parseFloat(c[10]),
             observaciones: c[11]
           });
+
           if (parseInt(c[0]) >= contadorID) {
             contadorID = parseInt(c[0]) + 1;
           }
         }
       });
+
       datos.sort((a, b) => new Date(a.fecha) - new Date(b.fecha));
       actualizarTabla();
-    });
+    })
+    .catch(err => console.error("Error al cargar CSV:", err));
 }
+// 🔁 HASTA AQUÍ
+
 
 function agregarTransaccion() {
   const tbody = document.querySelector("#tablaTransacciones tbody");
