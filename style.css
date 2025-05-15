@@ -421,3 +421,19 @@ canvas {
   position: relative;
   z-index: 1;
 }
+
+.btn-buscar {
+  background-color: #111827;
+  color: white;
+  border: none;
+  padding: 10px 14px;
+  border-radius: 6px;
+  font-size: 16px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.btn-buscar:hover {
+  background-color: #1f2937;
+}
+
