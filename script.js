@@ -333,3 +333,8 @@ async function cargarCSVDesdeGitHub() {
 cargarCSVDesdeGitHub();
 document.getElementById("busqueda").addEventListener("input", filtrarTablaPorCUIL);
 document.getElementById("ordenarFecha").addEventListener("click", ordenarPorFecha); 
+
+function ejecutarBusqueda() {
+  filtrarTablaPorCUIL();
+}
+
