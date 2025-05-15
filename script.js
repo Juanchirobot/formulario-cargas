@@ -65,6 +65,7 @@ function ejecutarBusqueda() {
   });
 }
 
+// 🔁 REEMPLAZAR DESDE AQUÍ
 function actualizarTabla() {
   const tbody = document.querySelector("#tabla tbody");
   tbody.innerHTML = "";
@@ -73,6 +74,7 @@ function actualizarTabla() {
     fila.innerHTML = `
       <td>${d.id}</td>
       <td>${d.usuario}</td>
+      <td>${d.cuil}</td>
       <td>${d.fecha}</td>
       <td>${d.caso}</td>
       <td>${d.descripcion}</td>
@@ -86,6 +88,8 @@ function actualizarTabla() {
     tbody.appendChild(fila);
   });
 }
+// 🔁 HASTA AQUÍ
+
 
 function cargarCasoEnFormulario(casoID) {
   const caso = datos.find(d => d.caso === casoID);
