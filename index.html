@@ -48,14 +48,15 @@
 
   <!-- CONTENIDO PRINCIPAL (sin cambios) -->
   <div class="main-content">
-    <div class="busqueda-container" id="busqueda-container">
-      <input
-        type="text"
-        id="busqueda"
-        placeholder="Buscar por CUIL Cliente..."
-        oninput="filtrarTablaPorCUIL()" />
-      <button class="btn secundario" onclick="ordenarPorFecha()">📅 Ordenar por Fecha</button>
-    </div>
+  <div class="busqueda-container" id="busqueda-container">
+  <input
+    type="text"
+    id="busqueda"
+    placeholder="Buscar por CUIL Cliente..." />
+  <button class="btn-buscar" onclick="ejecutarBusqueda()" title="Buscar">
+    🔍
+  </button>
+</div>
 
     <div class="tabla-casos" id="tablaCasos">
       <h2>📋 Tabla de Casos</h2>
