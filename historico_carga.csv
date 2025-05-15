@@ -1,8 +1,0 @@
-ID,Usuario,CUIL_Cliente,Fecha,Caso,Descripción,Estado,Prioridad,Tipo de Riesgo,Canal de Detección,Monto Sospechoso (ARS),Observaciones
-1,analista1,20354864120,2025-05-10,CASO-001,Intento de phishing,Pendiente,Alta,Ingeniería Social,Correo Electrónico,12000,Requiere verificación de origen
-2,analista2,20354452120,2025-05-10,CASO-002,Transferencia inusual,En revisión,Media,Transaccional,Banca Web,4800,Cliente con historial limpio
-3,analista3,20458452220,2025-05-10,CASO-003,Múltiples accesos fallidos,Finalizado,Baja,Acceso Ilegítimo,App Móvil,0,Se bloqueó automáticamente
-4,analista1,202958121420,2025-05-11,CASO-004,Compra con tarjeta clonada,En revisión,Alta,Fraude con Tarjeta,E-commerce,7600,Cliente ya notificado
-5,analista2,202958121420,2025-05-11,CASO-005,Cambio de dispositivo sospechoso,Pendiente,Media,Dispositivo Nuevo,Web Corporativa,0,Pendiente validación biométrica
-6,analista3,210862541,2025-05-11,CASO-006,Transacción a país de alto riesgo,Finalizado,Alta,Geolocalización Internacional,App Móvil,15000,Derivado a Legal
-7,Juanchi,20384653791,2025-05-12,CASO-0007,Transacción a país de alto riesgo,Finalizado,Alta,Transaccional,App Web,12300,Derivado a Legal
