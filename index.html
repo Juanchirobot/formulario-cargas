@@ -46,17 +46,15 @@
     </div>
   </div>
 
-  <!-- CONTENIDO PRINCIPAL (sin cambios) -->
+  <!-- Contenido principal -->
   <div class="main-content">
-  <div class="busqueda-container" id="busqueda-container">
-  <input
-    type="text"
-    id="busqueda"
-    placeholder="Buscar por CUIL Cliente..." />
-  <button class="btn-buscar" onclick="ejecutarBusqueda()" title="Buscar">
-    🔍
-  </button>
-</div>
+    <div class="busqueda-container" id="busqueda-container">
+      <input
+        type="text"
+        id="busqueda"
+        placeholder="Buscar por CUIL Cliente..." />
+      <button class="btn-buscar" onclick="ejecutarBusqueda()" title="Buscar">🔍</button>
+    </div>
 
     <div class="tabla-casos" id="tablaCasos">
       <h2>📋 Tabla de Casos</h2>
@@ -82,6 +80,7 @@
       </div>
     </div>
 
+    <!-- Formulario en pantalla -->
     <section class="formulario-section" id="formulario-section" style="display: none;">
       <h2>📝 Formulario de Carga</h2>
       <form id="formulario">
@@ -127,11 +126,31 @@
       </div>
     </section>
 
+    <!-- DASHBOARD -->
     <section class="dashboard" id="dashboard" style="display: none;">
       <h2>📊 Dashboard de Casos</h2>
+
+      <!-- Filtros -->
+      <div class="dashboard-filtros">
+        <select id="filtroAnio" onchange="filtrarPorAnio()">
+          <option value="">Año completo</option>
+        </select>
+        <select id="filtroMes" onchange="filtrarPorMes()">
+          <option value="">Todos los meses</option>
+        </select>
+      </div>
+
+      <!-- Totales -->
+      <div class="totales-dashboard">
+        <div><strong>Casos Totales:</strong> <span id="totalCasos">0</span></div>
+        <div><strong>Monto Total:</strong> $<span id="totalMontos">0</span></div>
+      </div>
+
+      <!-- Gráficos -->
       <div class="grafico-container"><canvas id="graficoEvolutivo"></canvas></div>
-      <div class="grafico-container"><canvas id="graficoTortaTipoRiesgo"></canvas></div>
-      <div class="grafico-container"><canvas id="graficoBarrasPrioridad"></canvas></div>
+      <div class="grafico-container"><h4>Canal de Detección (Cantidad)</h4><canvas id="graficoCanalCantidad"></canvas></div>
+      <div class="grafico-container"><h4>Canal de Detección (Montos)</h4><canvas id="graficoCanalMonto"></canvas></div>
+      <div class="grafico-container"><h4>Distribución % Tipo de Riesgo (por mes)</h4><canvas id="graficoPorcentajeTipoRiesgo"></canvas></div>
     </section>
   </div>
 
@@ -146,10 +165,10 @@
       <label for="cbuCuenta">CBU de Cuenta a Bloquear:</label>
       <input type="text" id="cbuCuenta" name="cbuCuenta" required />
       <div style="text-align:right; margin-top: 20px;">
-        <!-- API futura: integración aquí -->
         <button type="submit" class="btn">🚫 Confirmar Bloqueo</button>
       </div>
     </form>
   </div>
 </body>
 </html>
+
