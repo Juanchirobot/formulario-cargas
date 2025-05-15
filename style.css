@@ -366,3 +366,18 @@ input, textarea, select {
 .modal-api .close:hover {
   color: black;
 }
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 14px;
+  background-color: #ffffff;
+}
+
+th, td {
+  padding: 10px;
+  border: 1px solid #e2e8f0;
+  text-align: left;
+  background-color: #ffffff;
+}
+
