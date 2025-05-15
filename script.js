@@ -3,7 +3,7 @@ const transacciones = [];
 let chartInstance1, chartInstance2, chartInstance3;
 let contadorID = 1;
 
-/* === SIDEBAR COMPORTAMIENTO === */
+/* === SIDEBAR === */
 function expandSidebar() {
   document.querySelector('.sidebar').classList.add('expanded');
 }
@@ -15,25 +15,46 @@ function toggleSubmenu(id) {
   document.getElementById(id).classList.toggle('show');
 }
 
-/* === NAVEGACIÓN DE SECCIONES === */
+/* === OCULTAR TODAS LAS SECCIONES === */
+function ocultarTodo() {
+  document.getElementById("dashboard").style.display = "none";
+  document.getElementById("formulario-section").style.display = "none";
+  document.getElementById("tablaCasos").style.display = "none";
+  document.getElementById("busqueda-container").style.display = "none";
+}
+
+/* === SECCIONES CON TRANSICIÓN === */
 function mostrarTabla() {
-  document.getElementById("dashboard").style.display = "none";
-  document.getElementById("formulario-section").style.display = "none";
-  document.getElementById("tablaCasos").style.display = "block";
-  document.getElementById("busqueda-container").style.display = "flex";
+  ocultarTodo();
+  const tabla = document.getElementById("tablaCasos");
+  const buscador = document.getElementById("busqueda-container");
+  tabla.style.opacity = 0;
+  buscador.style.display = "flex";
+  setTimeout(() => {
+    tabla.style.display = "block";
+    tabla.style.opacity = 1;
+  }, 100);
 }
+
 function mostrarFormulario() {
-  document.getElementById("dashboard").style.display = "none";
-  document.getElementById("tablaCasos").style.display = "none";
-  document.getElementById("busqueda-container").style.display = "none";
-  document.getElementById("formulario-section").style.display = "block";
+  ocultarTodo();
+  const seccion = document.getElementById("formulario-section");
+  seccion.style.opacity = 0;
+  setTimeout(() => {
+    seccion.style.display = "block";
+    seccion.style.opacity = 1;
+  }, 100);
 }
+
 function mostrarDashboard() {
-  document.getElementById("tablaCasos").style.display = "none";
-  document.getElementById("formulario-section").style.display = "none";
-  document.getElementById("busqueda-container").style.display = "none";
-  document.getElementById("dashboard").style.display = "block";
-  renderizarGraficosDashboard();
+  ocultarTodo();
+  const dash = document.getElementById("dashboard");
+  dash.style.opacity = 0;
+  setTimeout(() => {
+    dash.style.display = "block";
+    dash.style.opacity = 1;
+    renderizarGraficosDashboard();
+  }, 100);
 }
 
 /* === FORMULARIO === */
@@ -106,7 +127,7 @@ document.getElementById("formulario").addEventListener("submit", (e) => {
   mostrarTabla();
 });
 
-/* === TABLA Y BÚSQUEDA === */
+/* === TABLA === */
 function actualizarTabla() {
   const tbody = document.querySelector("#tabla tbody");
   tbody.innerHTML = "";
@@ -128,6 +149,20 @@ function actualizarTabla() {
   });
 }
 
+function ejecutarBusqueda() {
+  const tabla = document.getElementById("tablaCasos");
+  const loader = document.createElement("div");
+  loader.className = "tabla-loader";
+  loader.innerText = "🔍 Buscando...";
+
+  tabla.appendChild(loader);
+
+  setTimeout(() => {
+    loader.remove();
+    filtrarTablaPorCUIL();
+  }, 500);
+}
+
 function filtrarTablaPorCUIL() {
   const texto = document.getElementById("busqueda").value.toLowerCase();
   const filas = document.querySelectorAll("#tabla tbody tr");
@@ -136,11 +171,6 @@ function filtrarTablaPorCUIL() {
     const cuil = transacciones.find((t) => t.caso === caso)?.cuil?.toLowerCase() || "";
     fila.style.display = cuil.includes(texto) ? "" : "none";
   });
-}
-
-function ordenarPorFecha() {
-  datos.sort((a, b) => new Date(a.fecha) - new Date(b.fecha));
-  actualizarTabla();
 }
 
 /* === CSV === */
@@ -162,7 +192,7 @@ function descargarCSV() {
     d.estado, d.prioridad, d.tipo_riesgo, d.canal_deteccion,
     d.monto_sospechoso.toFixed(2), d.observaciones
   ]);
-  exportarCSV("historico_carga.csv", encabezados, filas);
+  exportarCSV("casos.csv", encabezados, filas);
 }
 
 function descargarCSVTransacciones() {
@@ -184,7 +214,6 @@ function renderizarGraficosDashboard() {
 function renderGraficoEvolutivo() {
   const ctx = document.getElementById("graficoEvolutivo").getContext("2d");
   const meses = {};
-
   datos.forEach(d => {
     const [año, mes] = d.fecha.split('-');
     const clave = `${año}-${mes}`;
@@ -192,35 +221,17 @@ function renderGraficoEvolutivo() {
     meses[clave].monto += d.monto_sospechoso;
     meses[clave].cantidad += 1;
   });
-
   if (chartInstance1) chartInstance1.destroy();
   chartInstance1 = new Chart(ctx, {
     type: "line",
     data: {
       labels: Object.keys(meses),
       datasets: [
-        {
-          label: "Monto Sospechoso (ARS)",
-          data: Object.values(meses).map(v => v.monto),
-          borderColor: "#008080",
-          backgroundColor: "rgba(0,128,128,0.1)",
-          tension: 0.3
-        },
-        {
-          label: "Cantidad de Casos",
-          data: Object.values(meses).map(v => v.cantidad),
-          borderColor: "#6c757d",
-          backgroundColor: "rgba(108,117,125,0.1)",
-          tension: 0.3
-        }
+        { label: "Monto Sospechoso (ARS)", data: Object.values(meses).map(v => v.monto), borderColor: "#008080", backgroundColor: "rgba(0,128,128,0.1)", tension: 0.3 },
+        { label: "Cantidad de Casos", data: Object.values(meses).map(v => v.cantidad), borderColor: "#6c757d", backgroundColor: "rgba(108,117,125,0.1)", tension: 0.3 }
       ]
     },
-    options: {
-      responsive: true,
-      scales: {
-        y: { beginAtZero: true }
-      }
-    }
+    options: { responsive: true, scales: { y: { beginAtZero: true } } }
   });
 }
 
@@ -230,16 +241,12 @@ function renderGraficoTorta() {
   datos.forEach(d => {
     conteo[d.tipo_riesgo] = (conteo[d.tipo_riesgo] || 0) + 1;
   });
-
   if (chartInstance2) chartInstance2.destroy();
   chartInstance2 = new Chart(ctx, {
     type: "pie",
     data: {
       labels: Object.keys(conteo),
-      datasets: [{
-        data: Object.values(conteo),
-        backgroundColor: ["#007bff", "#28a745", "#ffc107", "#dc3545", "#6f42c1"]
-      }]
+      datasets: [{ data: Object.values(conteo), backgroundColor: ["#007bff", "#28a745", "#ffc107", "#dc3545", "#6f42c1"] }]
     },
     options: { responsive: true }
   });
@@ -253,14 +260,12 @@ function renderGraficoBarras() {
     const clave = `${año}-${mes}-${d.prioridad}`;
     prioridades[clave] = (prioridades[clave] || 0) + 1;
   });
-
   const agrupado = {};
   for (const key in prioridades) {
     const [ym, prioridad] = [key.slice(0, 7), key.slice(8)];
     if (!agrupado[prioridad]) agrupado[prioridad] = {};
     agrupado[prioridad][ym] = prioridades[key];
   }
-
   const mesesUnicos = [...new Set(Object.values(agrupado).flatMap(obj => Object.keys(obj)))].sort();
   const datasets = Object.keys(agrupado).map(prioridad => ({
     label: prioridad,
@@ -268,37 +273,27 @@ function renderGraficoBarras() {
     borderWidth: 1,
     backgroundColor: `rgba(${Math.floor(Math.random()*200)}, ${Math.floor(Math.random()*200)}, ${Math.floor(Math.random()*200)}, 0.6)`
   }));
-
   if (chartInstance3) chartInstance3.destroy();
   chartInstance3 = new Chart(ctx, {
     type: "bar",
-    data: {
-      labels: mesesUnicos,
-      datasets
-    },
-    options: {
-      responsive: true,
-      scales: {
-        y: { beginAtZero: true }
-      }
-    }
+    data: { labels: mesesUnicos, datasets },
+    options: { responsive: true, scales: { y: { beginAtZero: true } } }
   });
 }
 
-/* MODAL BLOQUEO CUENTA */
+/* === MODAL BLOQUEO CUENTA === */
 function abrirModalBloqueo() {
   document.getElementById("modalBloqueoCuenta").style.display = "block";
   document.getElementById("overlay").style.display = "block";
 }
-
 function cerrarModalBloqueo() {
   document.getElementById("modalBloqueoCuenta").style.display = "none";
   document.getElementById("overlay").style.display = "none";
 }
 
-/* INICIAL */
+/* === INICIO === */
 async function cargarCSVDesdeGitHub() {
-  const url = "historico_carga.csv";
+  const url = "casos.csv";
   try {
     const res = await fetch(url);
     const text = await res.text();
@@ -324,6 +319,8 @@ async function cargarCSVDesdeGitHub() {
         }
       }
     });
+    // Ordenar automáticamente por fecha
+    datos.sort((a, b) => new Date(a.fecha) - new Date(b.fecha));
     actualizarTabla();
   } catch (err) {
     console.error("⚠️ Error al cargar el CSV:", err);
@@ -331,10 +328,3 @@ async function cargarCSVDesdeGitHub() {
 }
 
 cargarCSVDesdeGitHub();
-document.getElementById("busqueda").addEventListener("input", filtrarTablaPorCUIL);
-document.getElementById("ordenarFecha").addEventListener("click", ordenarPorFecha); 
-
-function ejecutarBusqueda() {
-  filtrarTablaPorCUIL();
-}
-
