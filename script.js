@@ -114,7 +114,7 @@ function actualizarTabla() {
       <td>${d.canal_deteccion}</td>
       <td>${d.monto_sospechoso}</td>
       <td>${d.observaciones}</td>
-      <td><button onclick="cargarCasoEnFormulario('${d.caso}')">✏️ Editar</button></td>`;
+      <td><button onclick="cargarCasoEnFormulario('${d.caso}')">✏️</button></td>`;
     tbody.appendChild(fila);
   });
 }
@@ -160,3 +160,27 @@ function cargarCasoEnFormulario(casoID) {
 }
 cargarCSVDesdeGitHub();
 cargarCSVTransacciones();
+
+function descargarCSV() {
+  const headers = ["ID","Usuario","CUIL Cliente","Fecha","Caso","Descripción","Estado","Prioridad","Tipo de Riesgo","Canal de Detección","Monto Sospechoso (ARS)","Observaciones"];
+  const filas = datos.map(d => [
+    d.id,d.usuario,d.cuil,d.fecha,d.caso,d.descripcion,d.estado,d.prioridad,d.tipo_riesgo,d.canal_deteccion,d.monto_sospechoso,d.observaciones
+  ]);
+  exportarComoCSV("casos.csv", headers, filas);
+}
+function descargarCSVTransacciones() {
+  const headers = ["Usuario","Caso","CUIL","Fecha","CBU Origen","CBU Destino","Monto","Moneda"];
+  const filas = transacciones.map(t => [
+    t.usuario,t.caso,t.cuil,t.fecha,t.cbu_origen,t.cbu_destino,t.monto,t.moneda
+  ]);
+  exportarComoCSV("transacciones.csv", headers, filas);
+}
+function exportarComoCSV(nombre, encabezados, filas) {
+  const contenido = [encabezados, ...filas].map(fila => fila.join(",")).join("\n");
+  const blob = new Blob([contenido], { type: "text/csv" });
+  const a = document.createElement("a");
+  a.href = URL.createObjectURL(blob);
+  a.download = nombre;
+  a.click();
+  URL.revokeObjectURL(a.href);
+}
