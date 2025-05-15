@@ -342,7 +342,7 @@ function cerrarModalBloqueo() {
 
 /* === CARGA INICIAL === */
 async function cargarCSVDesdeGitHub() {
-  const url = "historico_carga.csv";
+  const url = "historico_carga_liviano.csv";
   try {
     const res = await fetch(url);
     const text = await res.text();
