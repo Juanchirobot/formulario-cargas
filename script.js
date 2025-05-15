@@ -162,7 +162,7 @@ function descargarCSV() {
     d.estado, d.prioridad, d.tipo_riesgo, d.canal_deteccion,
     d.monto_sospechoso.toFixed(2), d.observaciones
   ]);
-  exportarCSV("casos.csv", encabezados, filas);
+  exportarCSV("historico_carga.csv", encabezados, filas);
 }
 
 function descargarCSVTransacciones() {
@@ -298,7 +298,7 @@ function cerrarModalBloqueo() {
 
 /* INICIAL */
 async function cargarCSVDesdeGitHub() {
-  const url = "casos.csv";
+  const url = "historico_carga.csv";
   try {
     const res = await fetch(url);
     const text = await res.text();
