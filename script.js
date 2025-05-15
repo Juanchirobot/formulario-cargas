@@ -60,7 +60,7 @@ function ejecutarBusqueda() {
   const filas = document.querySelectorAll("#tabla tbody tr");
 
   filas.forEach((fila) => {
-    const cuil = fila.cells[2]?.textContent?.toLowerCase() || "";
+    const cuil = fila.cells[2]?.textContent?.toLowerCase() || ""; // índice 2: CUIL Cliente
     fila.style.display = cuil.includes(input) ? "" : "none";
   });
 }
@@ -141,12 +141,12 @@ function cargarCSVDesdeGitHub() {
       rows.forEach(row => {
         const c = row.split(",");
         if (c.length >= 12) {
-          const fechaValida = parsearFecha(c[3]);
+          const fechaValida = parsearFecha(c[3]); // posición 3: Fecha
           if (!fechaValida) return;
           datos.push({
             id: parseInt(c[0]),
             usuario: c[1],
-            cuil: c[2],
+            cuil: c[2], // posición 2: CUIL Cliente
             fecha: c[3],
             caso: c[4],
             descripcion: c[5],
