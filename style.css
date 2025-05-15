@@ -21,9 +21,9 @@ body {
   align-items: center;
   padding-top: 10px;
   transition: width 0.3s ease;
-  position: relative;
-  overflow-x: hidden;
-  z-index: 2;
+  position: sticky;
+  top: 0;
+  z-index: 100;
 }
 
 .sidebar:hover {
@@ -151,7 +151,7 @@ body {
   background-color: #334155;
 }
 
-/* CONTENIDO PRINCIPAL */
+/* === CONTENIDO PRINCIPAL === */
 .main-content {
   flex: 1;
   padding: 30px;
@@ -188,39 +188,78 @@ body {
 .btn-buscar:hover {
   background-color: #1f2937;
 }
+/* === DASHBOARD HEADER STICKY === */
+.dashboard-header-sticky {
+  position: sticky;
+  top: 0;
+  background-color: rgba(255, 255, 255, 0.95);
+  z-index: 10;
+  padding-bottom: 10px;
+  border-bottom: 1px solid #eee;
+}
 
+/* FILTROS */
+.dashboard-filtros {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+  margin-bottom: 15px;
+}
 
-/* BOTONES */
-.btn {
-  background-color: #008080;
-  color: white;
-  border: none;
-  padding: 10px 16px;
+.dashboard-filtros select {
+  padding: 8px;
   border-radius: 6px;
+  border: 1px solid #ccc;
   font-size: 14px;
-  cursor: pointer;
-  transition: background-color 0.2s;
+  background-color: #f9fafb;
+  color: #111;
 }
 
-.btn:hover {
-  background-color: #006666;
+/* TOTALES Y VARIACIONES */
+.totales-dashboard {
+  display: flex;
+  justify-content: space-around;
+  gap: 30px;
+  padding: 20px 10px;
+  margin-bottom: 20px;
+  background-color: rgba(245, 245, 245, 0.95);
+  border-radius: 10px;
+  box-shadow: 0 0 6px rgba(0,0,0,0.06);
 }
 
-.btn.secundario {
-  background-color: #e2e8f0;
-  color: #1e293b;
+.totales-dashboard div {
+  font-size: 22px;
+  font-weight: bold;
+  color: #111827;
+  text-align: center;
 }
 
-/* TABLA DE CASOS */
-.tabla-casos {
-  background-color: rgba(255, 255, 255, 0.96);
-  border-radius: 12px;
+/* INDICADORES DE VARIACIÓN */
+#variacionCasos.positivo,
+#variacionMonto.positivo {
+  color: #28a745; /* verde */
+}
+
+#variacionCasos.negativo,
+#variacionMonto.negativo {
+  color: #dc3545; /* rojo */
+}
+
+/* GRAFICOS */
+.grafico-container {
+  margin-top: 30px;
+  background-color: white;
+  border-radius: 10px;
   padding: 20px;
-  box-shadow: 0 0 8px rgba(0, 0, 0, 0.1);
-  opacity: 1;
-  transition: opacity 0.4s ease;
+  box-shadow: 0 0 6px rgba(0,0,0,0.08);
 }
 
+canvas {
+  width: 100% !important;
+  max-height: 400px;
+}
+
+/* FORMULARIO Y TABLAS */
 .tabla-scroll {
   overflow-x: auto;
   max-height: 500px;
@@ -245,7 +284,6 @@ th {
   font-weight: 600;
 }
 
-/* FORMULARIO */
 .formulario-section {
   background-color: rgba(255, 255, 255, 0.96);
   border-radius: 12px;
@@ -281,123 +319,7 @@ input, textarea, select {
   box-sizing: border-box;
 }
 
-/* TRANSACCIONES */
-#transacciones-container {
-  margin-top: 20px;
-  overflow-x: auto;
-}
-
-#tablaTransacciones {
-  width: 100%;
-  border-collapse: collapse;
-  margin-top: 10px;
-  background-color: #fdfdfd;
-  border-radius: 8px;
-  overflow: hidden;
-}
-
-#tablaTransacciones th, #tablaTransacciones td {
-  padding: 8px;
-  border: 1px solid #ddd;
-  font-size: 13px;
-}
-
-#tablaTransacciones input {
-  width: 100%;
-  box-sizing: border-box;
-}
-
-/* DASHBOARD */
-.dashboard {
-  margin-top: 40px;
-  background-color: rgba(255, 255, 255, 0.95);
-  border-radius: 12px;
-  padding: 30px;
-  box-shadow: 0 0 10px rgba(0,0,0,0.1);
-  opacity: 1;
-  transition: opacity 0.4s ease;
-}
-
-.dashboard h2 {
-  margin-top: 0;
-  text-align: center;
-  font-size: 22px;
-}
-
-.dashboard-filtros {
-  display: flex;
-  justify-content: flex-end;
-  gap: 12px;
-  margin-bottom: 15px;
-}
-
-.dashboard-filtros select {
-  padding: 8px;
-  border-radius: 6px;
-  border: 1px solid #ccc;
-  font-size: 14px;
-  background-color: #f9fafb;
-  color: #111;
-}
-
-.totales-dashboard {
-  display: flex;
-  justify-content: space-around;
-  gap: 30px;
-  padding: 20px 10px;
-  margin-bottom: 30px;
-  background-color: rgba(245, 245, 245, 0.95);
-  border-radius: 10px;
-  box-shadow: 0 0 6px rgba(0,0,0,0.06);
-}
-
-.totales-dashboard div {
-  font-size: 22px;
-  font-weight: bold;
-  color: #111827;
-  text-align: center;
-}
-
-.grafico-container {
-  margin-top: 30px;
-  background-color: white;
-  border-radius: 10px;
-  padding: 20px;
-  box-shadow: 0 0 6px rgba(0,0,0,0.08);
-}
-
-canvas {
-  width: 100% !important;
-  max-height: 400px;
-}
-
-/* CARGA BUSQUEDA */
-.tabla-loader {
-  background-color: rgba(0, 0, 0, 0.7);
-  color: #ffffff;
-  font-size: 14px;
-  padding: 10px 20px;
-  border-radius: 6px;
-  text-align: center;
-  margin-top: 10px;
-  animation: fadeIn 0.3s ease-in-out;
-}
-
-@keyframes fadeIn {
-  from { opacity: 0; transform: scale(0.95); }
-  to   { opacity: 1; transform: scale(1); }
-}
-
 /* MODAL */
-#overlay {
-  display: none;
-  position: fixed;
-  top: 0; left: 0;
-  width: 100vw; height: 100vh;
-  background: rgba(0, 0, 0, 0.5);
-  z-index: 999;
-}
-
 .modal-api {
   display: none;
   position: fixed;
