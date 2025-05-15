@@ -55,15 +55,18 @@ function mostrarDashboard() {
   }, 100);
 }
 
+// 🔁 REEMPLAZAR DESDE AQUÍ
 function ejecutarBusqueda() {
   const input = document.getElementById("busqueda").value.toLowerCase();
   const filas = document.querySelectorAll("#tabla tbody tr");
 
   filas.forEach((fila) => {
-    const cuil = fila.cells[2]?.textContent?.toLowerCase() || ""; // índice 2: CUIL Cliente
-    fila.style.display = cuil.includes(input) ? "" : "none";
+    const cuilCliente = fila.cells[2]?.textContent?.toLowerCase() || "";
+    fila.style.display = cuilCliente.includes(input) ? "" : "none";
   });
 }
+// 🔁 HASTA AQUÍ
+
 
 // 🔁 REEMPLAZAR DESDE AQUÍ
 function actualizarTabla() {
