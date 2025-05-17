@@ -51,7 +51,7 @@ function ejecutarBusqueda() {
 
 // ========== FUNCIONES DE CARGA DE DATOS ==========
 function cargarCSVDesdeGitHub() {
-  fetch("historico_carga_liviano")
+fetch("https://raw.githubusercontent.com/Juanchirobot/formulario-cargas/main/historico_carga_liviano.csv")
     .then(r => r.text())
     .then(text => {
       const rows = text.trim().split("\n").slice(1);
