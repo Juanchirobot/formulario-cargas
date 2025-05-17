@@ -133,7 +133,7 @@ function descargarCSV() {
   const filas = datos.map(d => [
     d.id,d.usuario,d.cuil,d.fecha,d.caso,d.descripcion,d.estado,d.prioridad,d.tipo_riesgo,d.canal_deteccion,d.monto_sospechoso,d.observaciones
   ]);
-  exportarComoCSV("casos.csv", headers, filas);
+  exportarComoCSV("hisotrico_carga.csv", headers, filas);
 }
 function descargarCSVTransacciones() {
   const headers = ["Usuario","Caso","CUIL","Fecha","CBU Origen","CBU Destino","Monto","Moneda"];
