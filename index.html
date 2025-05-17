@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Panel de Casos - Prevención de Fraudes</title>
+  <title>Panel de Control - Fraudes - Riesgos</title>
   <link rel="stylesheet" href="style.css" />
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <script defer src="script.js"></script>
@@ -22,23 +22,17 @@
       <div class="submenu" id="submenu-casos">
         <button onclick="mostrarFormulario()">📝 Formulario de Carga</button>
       </div>
-    </div>
 
-    <div class="nav-wrap">
       <div class="nav-item" onclick="mostrarDashboard()">
         <span class="icon">📈</span>
         <span class="nav-label">Estadísticas</span>
       </div>
-    </div>
 
-    <div class="nav-wrap">
       <div class="nav-item" onclick="descargarCSV()">
         <span class="icon">💾</span>
         <span class="nav-label">Descargar Casos</span>
       </div>
-    </div>
 
-    <div class="nav-wrap">
       <div class="nav-item" onclick="descargarCSVTransacciones()">
         <span class="icon">🧷</span>
         <span class="nav-label">Transacciones</span>
@@ -48,14 +42,13 @@
 
   <!-- Contenido principal -->
   <div class="main-content">
+    <!-- Buscador por CUIL -->
     <div class="busqueda-container" id="busqueda-container">
-      <input
-        type="text"
-        id="busqueda"
-        placeholder="Buscar por CUIL Cliente..." />
+      <input type="text" id="busqueda" placeholder="Buscar por CUIL Cliente..." />
       <button class="btn-buscar" onclick="ejecutarBusqueda()" title="Buscar">🔍</button>
     </div>
 
+    <!-- Tabla de casos -->
     <div class="tabla-casos" id="tablaCasos">
       <h2>📋 Tabla de Casos</h2>
       <div class="tabla-scroll">
@@ -64,6 +57,7 @@
             <tr>
               <th>ID</th>
               <th>Usuario</th>
+              <th>CUIL Cliente</th>
               <th>Fecha</th>
               <th>Caso</th>
               <th>Descripción</th>
@@ -73,47 +67,61 @@
               <th>Canal de Detección</th>
               <th>Monto Sospechoso (ARS)</th>
               <th>Observaciones</th>
+              <th>Editar</th>
             </tr>
           </thead>
           <tbody></tbody>
         </table>
       </div>
     </div>
-
-    <!-- Formulario en pantalla -->
+    <!-- Formulario embebido -->
     <section class="formulario-section" id="formulario-section" style="display: none;">
       <h2>📝 Formulario de Carga</h2>
       <form id="formulario">
-        <div class="form-grid">
-          <div class="form-group"><label>Usuario</label><input type="text" id="usuario" required /></div>
-          <div class="form-group"><label>Fecha</label><input type="date" id="fecha" required /></div>
-          <div class="form-group"><label>Caso</label><input type="text" id="caso" required /></div>
-          <div class="form-group"><label>Descripción</label><textarea id="descripcion"></textarea></div>
-          <div class="form-group"><label>Estado</label><input type="text" id="estado" required /></div>
-          <div class="form-group"><label>Prioridad</label><input type="text" id="prioridad" required /></div>
-          <div class="form-group"><label>Tipo de Riesgo</label><input type="text" id="tipo_riesgo" required /></div>
-          <div class="form-group"><label>Canal de Detección</label><input type="text" id="canal_deteccion" required /></div>
-          <div class="form-group"><label>Observaciones</label><textarea id="observaciones"></textarea></div>
-        </div>
+        <!-- Bloque: Usuario -->
+        <fieldset class="form-bloque">
+          <legend>Datos del Usuario</legend>
+          <div class="form-grid">
+            <div class="form-group"><label>Usuario</label><input type="text" id="usuario" required /></div>
+            <div class="form-group"><label>Fecha</label><input type="date" id="fecha" required /></div>
+            <div class="form-group"><label>Caso</label><input type="text" id="caso" readonly /></div>
+          </div>
+        </fieldset>
 
-        <h4>Transacciones Relacionadas</h4>
-        <div id="transacciones-container">
-          <table id="tablaTransacciones">
-            <thead>
-              <tr>
-                <th>CUIL Cliente</th>
-                <th>Fecha</th>
-                <th>CBU Origen</th>
-                <th>CBU Destino</th>
-                <th>Monto</th>
-                <th>Moneda</th>
-                <th></th>
-              </tr>
-            </thead>
-            <tbody></tbody>
-          </table>
-          <button type="button" class="btn secundario" onclick="agregarTransaccion()">➕ Agregar Transacción</button>
-        </div>
+        <!-- Bloque: Datos del Caso -->
+        <fieldset class="form-bloque">
+          <legend>Datos del Caso</legend>
+          <div class="form-grid">
+            <div class="form-group"><label>Descripción</label><textarea id="descripcion"></textarea></div>
+            <div class="form-group"><label>Estado</label><input type="text" id="estado" required /></div>
+            <div class="form-group"><label>Prioridad</label><input type="text" id="prioridad" required /></div>
+            <div class="form-group"><label>Tipo de Riesgo</label><input type="text" id="tipo_riesgo" required /></div>
+            <div class="form-group"><label>Canal de Detección</label><input type="text" id="canal_deteccion" required /></div>
+            <div class="form-group"><label>Observaciones</label><textarea id="observaciones"></textarea></div>
+          </div>
+        </fieldset>
+
+        <!-- Bloque: Transacciones -->
+        <fieldset class="form-bloque">
+          <legend>Transacciones Relacionadas</legend>
+          <div id="transacciones-container">
+            <table id="tablaTransacciones">
+              <thead>
+                <tr>
+                  <th>CUIL Cliente</th>
+                  <th>Fecha</th>
+                  <th>CBU Origen</th>
+                  <th>CBU Destino</th>
+                  <th>Monto</th>
+                  <th>Moneda</th>
+                  <th></th>
+                </tr>
+              </thead>
+              <tbody></tbody>
+            </table>
+            <button type="button" class="btn secundario" onclick="agregarTransaccion()">➕ Agregar Transacción</button>
+          </div>
+        </fieldset>
 
         <div style="text-align:right; margin-top: 20px;">
           <button type="submit" class="btn">✅ Guardar Caso</button>
@@ -126,7 +134,7 @@
       </div>
     </section>
 
-    <!-- DASHBOARD -->
+    <!-- Dashboard -->
     <section class="dashboard" id="dashboard" style="display: none;">
       <h2>📊 Dashboard de Casos</h2>
 
@@ -142,18 +150,18 @@
 
       <!-- Totales -->
       <div class="totales-dashboard">
-        <div><strong>Casos Totales:</strong> <span id="totalCasos">0</span></div>
-        <div><strong>Monto Total:</strong> $<span id="totalMontos">0</span></div>
+        <div><strong>Casos Totales:</strong> <span id="totalCasos">0</span> <span id="variacionCasos"></span></div>
+        <div><strong>Monto Total:</strong> $<span id="totalMontos">0</span> <span id="variacionMonto"></span></div>
+
       </div>
 
-      <!-- Gráficos -->
+      <!-- Gráficos (canvas) -->
       <div class="grafico-container"><canvas id="graficoEvolutivo"></canvas></div>
       <div class="grafico-container"><h4>Canal de Detección (Cantidad)</h4><canvas id="graficoCanalCantidad"></canvas></div>
       <div class="grafico-container"><h4>Canal de Detección (Montos)</h4><canvas id="graficoCanalMonto"></canvas></div>
       <div class="grafico-container"><h4>Distribución % Tipo de Riesgo (por mes)</h4><canvas id="graficoPorcentajeTipoRiesgo"></canvas></div>
     </section>
-  </div>
-
+  
   <!-- Overlay -->
   <div id="overlay" onclick="cerrarModales()"></div>
 
