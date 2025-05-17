@@ -1,32 +1,39 @@
-
-// ========== VARIABLES GLOBALES ==========
 let datos = [];
 let transacciones = [];
-let contadorID = 1000;
 let chartInstance1, chartInstance2, chartInstance3, chartInstance4;
-
-// ========== FUNCIONES DE UI ==========
 function expandSidebar() {
   document.querySelector('.sidebar').classList.add('expanded');
 }
 function collapseSidebar() {
   document.querySelector('.sidebar').classList.remove('expanded');
-  document.getElementById('submenu-casos').classList.remove('show');
+  document.getElementById('submenu-casos')?.classList.remove('show');
 }
 function toggleSubmenu(id) {
-  document.getElementById(id).classList.toggle('show');
+  document.getElementById(id)?.classList.toggle('show');
+}
+function abrirModalBloqueo() {
+  document.getElementById("modalBloqueoCuenta").style.display = "block";
+  document.getElementById("overlay").style.display = "block";
+}
+function cerrarModalBloqueo() {
+  document.getElementById("modalBloqueoCuenta").style.display = "none";
+  document.getElementById("overlay").style.display = "none";
+}
+function cerrarModales() {
+  cerrarModalBloqueo();
 }
 function ocultarTodo() {
-  document.getElementById("dashboard").style.display = "none";
-  document.getElementById("formulario-section").style.display = "none";
-  document.getElementById("tablaCasos").style.display = "none";
-  document.getElementById("busqueda-container").style.display = "none";
+  ["dashboard", "formulario-section", "tablaCasos", "busqueda-container"]
+    .forEach(id => {
+      const el = document.getElementById(id);
+      if (el) el.style.display = "none";
+    });
 }
 function mostrarTabla() {
   ocultarTodo();
   document.getElementById("busqueda-container").style.display = "flex";
   document.getElementById("tablaCasos").style.display = "block";
-  actualizarTabla();
+  actualizarTabla();console.log("actualizando tabla");
 }
 function mostrarFormulario() {
   ocultarTodo();
@@ -40,11 +47,12 @@ function mostrarDashboard() {
   renderizarGraficosDashboard();
 }
 
-// ========== FUNCIONES DE DATOS ==========
+
 function cargarCSVDesdeGitHub() {
   fetch("https://raw.githubusercontent.com/Juanchirobot/formulario-cargas/main/historico_carga_liviano.csv")
     .then(r => r.text())
     .then(text => {
+      datos = [];
       const rows = text.trim().split("\n").slice(1);
       rows.forEach(row => {
         const c = row.split(",");
@@ -66,12 +74,14 @@ function cargarCSVDesdeGitHub() {
         }
       });
       actualizarTabla();
-      renderizarGraficosDashboard();
       cargarFiltros();
+      renderizarGraficosDashboard();
     });
+
   fetch("https://raw.githubusercontent.com/Juanchirobot/formulario-cargas/main/transacciones_caso_liviano.csv")
     .then(r => r.text())
     .then(text => {
+      transacciones = [];
       const rows = text.trim().split("\n").slice(1);
       rows.forEach(row => {
         const t = row.split(",");
@@ -90,46 +100,45 @@ function cargarCSVDesdeGitHub() {
     });
 }
 
-// ========== TABLA Y FORMULARIO ==========
-function actualizarTabla() {
-  const tbody = document.querySelector("#tabla tbody");
-  tbody.innerHTML = "";
-  datos.forEach(d => {
-    const fila = document.createElement("tr");
-    fila.innerHTML = `
-      <td>${d.id}</td>
-      <td>${d.usuario}</td>
-      <td>${d.cuil}</td>
-      <td>${d.fecha}</td>
-      <td>${d.caso}</td>
-      <td>${d.descripcion}</td>
-      <td>${d.estado}</td>
-      <td>${d.prioridad}</td>
-      <td>${d.tipo_riesgo}</td>
-      <td>${d.canal_deteccion}</td>
-      <td>${d.monto_sospechoso}</td>
-      <td>${d.observaciones}</td>`;
 
-  const btnEditar = document.createElement("button");
-  btnEditar.textContent = "✏️";
-  btnEditar.className = "btn";
-  btnEditar.onclick = () => cargarCasoEnFormulario(d.caso);
-  fila.appendChild(document.createElement("td")).appendChild(btnEditar);
-    tbody.appendChild(fila);
-  });
-}
-
-document.getElementById("formulario").addEventListener("submit", function(e) {
+document.getElementById("formulario").addEventListener("submit", function (e) {
   e.preventDefault();
-  const nuevoID = datos.length + 1;
-  const casoID = "CASO-" + String(nuevoID).padStart(5, "0");
 
+  const caso = document.getElementById("caso").value.trim();
+  const cuil = document.querySelector("#tablaTransacciones tbody tr input")?.value || "";
+  if (!caso || !cuil) {
+    alert("El campo CASO y al menos una transacción con CUIL son obligatorios.");
+    return;
+  }
+
+  const existe = datos.find(d => d.caso === caso);
+  if (!existe) {
+    const nuevoCaso = {
+      id: datos.length + 1,
+      usuario: document.getElementById("usuario").value,
+      cuil,
+      fecha: document.getElementById("fecha").value,
+      caso,
+      descripcion: document.getElementById("descripcion").value,
+      estado: document.getElementById("estado").value,
+      prioridad: document.getElementById("prioridad").value,
+      tipo_riesgo: document.getElementById("tipo_riesgo").value,
+      canal_deteccion: document.getElementById("canal_deteccion").value,
+      monto_sospechoso: 0,
+      observaciones: document.getElementById("observaciones").value
+    };
+    datos.push(nuevoCaso);
+  }
+
+  // Eliminar transacciones anteriores del mismo caso
+  transacciones = transacciones.filter(t => t.caso !== caso);
+
+  // Agregar nuevas transacciones
   let montoTotal = 0;
-  const nuevasTransacciones = [];
   document.querySelectorAll("#tablaTransacciones tbody tr").forEach(row => {
     const cells = row.querySelectorAll("input, select");
     const t = {
-      caso: casoID,
+      caso,
       cuil: cells[0].value,
       fecha: cells[1].value,
       cbu_origen: cells[2].value,
@@ -137,30 +146,55 @@ document.getElementById("formulario").addEventListener("submit", function(e) {
       monto: parseFloat(cells[4].value),
       moneda: cells[5].value
     };
-    nuevasTransacciones.push(t);
+    transacciones.push(t);
     montoTotal += t.moneda === "USD" ? t.monto * 1000 : t.monto;
   });
 
-  const nuevoCaso = {
-    id: nuevoID,
-    usuario: document.getElementById("usuario").value,
-    cuil: nuevasTransacciones[0]?.cuil || "",
-    fecha: document.getElementById("fecha").value,
-    caso: casoID,
-    descripcion: document.getElementById("descripcion").value,
-    estado: document.getElementById("estado").value,
-    prioridad: document.getElementById("prioridad").value,
-    tipo_riesgo: document.getElementById("tipo_riesgo").value,
-    canal_deteccion: document.getElementById("canal_deteccion").value,
-    monto_sospechoso: montoTotal,
-    observaciones: document.getElementById("observaciones").value
-  };
+  // Actualizar monto en datos[]
+  const casoActualizado = datos.find(d => d.caso === caso);
+  if (casoActualizado) casoActualizado.monto_sospechoso = montoTotal;
 
-  datos.push(nuevoCaso);
-  transacciones.push(...nuevasTransacciones);
   actualizarTabla();
   mostrarTabla();
 });
+
+
+function cargarCasoEnFormulario(casoID) {
+  const caso = datos.find(d => d.caso === casoID);
+  if (!caso) return;
+  mostrarFormulario();
+
+  document.getElementById("usuario").value = caso.usuario;
+  document.getElementById("fecha").value = caso.fecha;
+  document.getElementById("caso").value = caso.caso;
+  document.getElementById("descripcion").value = caso.descripcion;
+  document.getElementById("estado").value = caso.estado;
+  document.getElementById("prioridad").value = caso.prioridad;
+  document.getElementById("tipo_riesgo").value = caso.tipo_riesgo;
+  document.getElementById("canal_deteccion").value = caso.canal_deteccion;
+  document.getElementById("observaciones").value = caso.observaciones;
+
+  const tbody = document.querySelector("#tablaTransacciones tbody");
+  tbody.innerHTML = "";
+  transacciones.filter(t => t.caso === casoID).forEach(t => {
+    const fila = document.createElement("tr");
+    fila.innerHTML = `
+      <td><input type="text" value="${t.cuil}" required></td>
+      <td><input type="date" value="${t.fecha}" required></td>
+      <td><input type="text" value="${t.cbu_origen}" required></td>
+      <td><input type="text" value="${t.cbu_destino}" required></td>
+      <td><input type="number" value="${t.monto}" required></td>
+      <td>
+        <select required>
+          <option value="ARS" ${t.moneda === "ARS" ? "selected" : ""}>ARS</option>
+          <option value="USD" ${t.moneda === "USD" ? "selected" : ""}>USD</option>
+        </select>
+      </td>
+      <td><button type="button" onclick="this.closest('tr').remove()">❌</button></td>`;
+    tbody.appendChild(fila);
+  });
+}
+
 
 function agregarTransaccion() {
   const fila = document.createElement("tr");
@@ -179,168 +213,308 @@ function agregarTransaccion() {
     <td><button type="button" onclick="this.closest('tr').remove()">❌</button></td>`;
   document.querySelector("#tablaTransacciones tbody").appendChild(fila);
 }
-
-// ========== GRAFICOS Y FILTROS ==========
-function renderizarGraficosDashboard() {
-  if (chartInstance1) chartInstance1.destroy();
-  if (chartInstance2) chartInstance2.destroy();
-  if (chartInstance3) chartInstance3.destroy();
-  if (chartInstance4) chartInstance4.destroy();
-
-  document.getElementById("totalCasos").textContent = datos.length;
-  const monto = datos.reduce((sum, d) => sum + d.monto_sospechoso, 0);
-  document.getElementById("totalMontos").textContent = (monto / 1e6).toFixed(2) + "M";
-
-  const meses = {};
-  datos.forEach(d => {
-    const date = new Date(d.fecha);
-    if (!isNaN(date)) {
-      const mes = date.toLocaleDateString("es-AR", { year: '2-digit', month: 'short' });
-      if (!meses[mes]) meses[mes] = { casos: 0, monto: 0 };
-      meses[mes].casos++;
-      meses[mes].monto += d.monto_sospechoso;
-    }
-  });
-
-  const labels = Object.keys(meses);
-  const casosPorMes = labels.map(m => meses[m].casos);
-  const montosPorMes = labels.map(m => (meses[m].monto / 1e6).toFixed(2));
-
-  chartInstance1 = new Chart(document.getElementById("graficoEvolutivo"), {
-    type: 'line',
-    data: {
-      labels,
-      datasets: [
-        { label: "Casos", data: casosPorMes, borderColor: "blue", fill: false },
-        { label: "Montos (M)", data: montosPorMes, borderColor: "orange", fill: false }
-      ]
-    }
-  });
-
-  const canal = {};
-  datos.forEach(d => {
-    canal[d.canal_deteccion] = (canal[d.canal_deteccion] || 0) + 1;
-  });
-
-  chartInstance2 = new Chart(document.getElementById("graficoCanalCantidad"), {
-    type: "bar",
-    data: {
-      labels: Object.keys(canal),
-      datasets: [{ label: "Cantidad", data: Object.values(canal), backgroundColor: "teal" }]
-    },
-    options: { indexAxis: 'y' }
-  });
-
-  const canalMontos = {};
-  datos.forEach(d => {
-    canalMontos[d.canal_deteccion] = (canalMontos[d.canal_deteccion] || 0) + d.monto_sospechoso;
-  });
-
-  chartInstance3 = new Chart(document.getElementById("graficoCanalMonto"), {
-    type: "bar",
-    data: {
-      labels: Object.keys(canalMontos),
-      datasets: [{ label: "Montos", data: Object.values(canalMontos).map(m => (m / 1e6).toFixed(2)), backgroundColor: "salmon" }]
-    },
-    options: { indexAxis: 'y' }
-  });
-
-  const porTipo = {};
-  datos.forEach(d => {
-    const mes = new Date(d.fecha).toLocaleDateString("es-AR", { year: '2-digit', month: 'short' });
-    if (!porTipo[mes]) porTipo[mes] = {};
-    porTipo[mes][d.tipo_riesgo] = (porTipo[mes][d.tipo_riesgo] || 0) + 1;
-  });
-
-  const tipos = Array.from(new Set(datos.map(d => d.tipo_riesgo)));
-  const tipoDatasets = tipos.map(tipo => ({
-    label: tipo,
-    data: Object.keys(porTipo).map(m => porTipo[m][tipo] || 0),
-    stack: "stack1"
-  }));
-
-  chartInstance4 = new Chart(document.getElementById("graficoPorcentajeTipoRiesgo"), {
-    type: "bar",
-    data: {
-      labels: Object.keys(porTipo),
-      datasets: tipoDatasets
-    },
-    options: { scales: { x: { stacked: true }, y: { stacked: true } } }
-  });
-}
-
-function cargarFiltros() {
-  const años = [...new Set(datos.map(d => new Date(d.fecha).getFullYear()))].sort();
-  const selectAnio = document.getElementById("filtroAnio");
-  años.forEach(a => {
-    const op = document.createElement("option");
-    op.value = a;
-    op.textContent = a;
-    selectAnio.appendChild(op);
-  });
-}
-
-function descargarCSV() {
-  let contenido = "ID,Usuario,CUIL,Fecha,Caso,Descripción,Estado,Prioridad,Tipo de Riesgo,Canal de Detección,Monto Sospechoso,Observaciones\n";
-  datos.forEach(d => {
-    contenido += `${d.id},${d.usuario},${d.cuil},${d.fecha},${d.caso},${d.descripcion},${d.estado},${d.prioridad},${d.tipo_riesgo},${d.canal_deteccion},${d.monto_sospechoso},${d.observaciones}\n`;
-  });
-  const blob = new Blob([contenido], { type: "text/csv" });
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement("a");
-  a.href = url;
-  a.download = "historico_carga_liviano.csv";
-  a.click();
-}
-
-function descargarCSVTransacciones() {
-  let contenido = "Caso,CUIL,Fecha,CBU Origen,CBU Destino,Monto,Moneda\n";
-  transacciones.forEach(t => {
-    contenido += `${t.caso},${t.cuil},${t.fecha},${t.cbu_origen},${t.cbu_destino},${t.monto},${t.moneda}\n`;
-  });
-  const blob = new Blob([contenido], { type: "text/csv" });
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement("a");
-  a.href = url;
-  a.download = "transacciones_caso_liviano.csv";
-  a.click();
-}
-
-window.onload = cargarCSVDesdeGitHub;
-
-
-function cargarCasoEnFormulario(casoID) {
-  const caso = datos.find(d => d.caso === casoID);
-  if (!caso) return;
-  mostrarFormulario();
-  document.getElementById("usuario").value = caso.usuario;
-  document.getElementById("fecha").value = caso.fecha;
-  document.getElementById("caso").value = caso.caso;
-  document.getElementById("descripcion").value = caso.descripcion;
-  document.getElementById("estado").value = caso.estado;
-  document.getElementById("prioridad").value = caso.prioridad;
-  document.getElementById("tipo_riesgo").value = caso.tipo_riesgo;
-  document.getElementById("canal_deteccion").value = caso.canal_deteccion;
-  document.getElementById("observaciones").value = caso.observaciones;
-
-  const tbody = document.querySelector("#tablaTransacciones tbody");
+function actualizarTabla() {
+  const tbody = document.querySelector("#tabla tbody");
   tbody.innerHTML = "";
-  const transacs = transacciones.filter(t => t.caso === casoID);
-  transacs.forEach(t => {
+  datos.forEach(d => {
     const fila = document.createElement("tr");
     fila.innerHTML = `
-      <td><input type="text" value="${t.cuil}" required></td>
-      <td><input type="date" value="${t.fecha}" required></td>
-      <td><input type="text" value="${t.cbu_origen}" required></td>
-      <td><input type="text" value="${t.cbu_destino}" required></td>
-      <td><input type="number" value="${t.monto}" required></td>
-      <td>
-        <select required>
-          <option value="ARS" ${t.moneda === "ARS" ? "selected" : ""}>ARS</option>
-          <option value="USD" ${t.moneda === "USD" ? "selected" : ""}>USD</option>
-        </select>
-      </td>
-      <td><button type="button" onclick="this.closest('tr').remove()">❌</button></td>`;
+      <td>${d.id}</td>
+      <td>${d.usuario}</td>
+      <td>${d.cuil}</td>
+      <td>${d.fecha}</td>
+      <td>${d.caso}</td>
+      <td>${d.descripcion}</td>
+      <td>${d.estado}</td>
+      <td>${d.prioridad}</td>
+      <td>${d.tipo_riesgo}</td>
+      <td>${d.canal_deteccion}</td>
+      <td>${d.monto_sospechoso}</td>
+      <td>${d.observaciones}</td>
+      <td><button class="btn secundario" onclick="cargarCasoEnFormulario('${d.caso}')">✏️</button></td>`;
     tbody.appendChild(fila);
   });
 }
+function descargarCSV() {
+  let csv = "ID,Usuario,CUIL Cliente,Fecha,Caso,Descripción,Estado,Prioridad,Tipo de Riesgo,Canal de Detección,Monto Sospechoso,Observaciones\n";
+  datos.forEach(d => {
+    csv += `${d.id},${d.usuario},${d.cuil},${d.fecha},${d.caso},${d.descripcion},${d.estado},${d.prioridad},${d.tipo_riesgo},${d.canal_deteccion},${d.monto_sospechoso},${d.observaciones}\n`;
+  });
+  const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
+  const link = document.createElement("a");
+  link.href = URL.createObjectURL(blob);
+  link.download = "casos_actualizados.csv";
+  link.click();
+}
+
+function descargarCSVTransacciones() {
+  let csv = "Caso,CUIL Cliente,Fecha,CBU Origen,CBU Destino,Monto,Moneda\n";
+  transacciones.forEach(t => {
+    csv += `${t.caso},${t.cuil},${t.fecha},${t.cbu_origen},${t.cbu_destino},${t.monto},${t.moneda}\n`;
+  });
+  const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
+  const link = document.createElement("a");
+  link.href = URL.createObjectURL(blob);
+  link.download = "transacciones_actualizadas.csv";
+  link.click();
+}
+function cargarFiltros() {
+  const filtroAnio = document.getElementById("filtroAnio");
+  const filtroMes = document.getElementById("filtroMes");
+
+  filtroAnio.innerHTML = '<option value="">Año completo</option>';
+  filtroMes.innerHTML = '<option value="">Todos los meses</option>';
+
+  const fechas = datos.map(d => d.fecha);
+  const anios = [...new Set(fechas.map(f => f.split("-")[0]))].sort();
+  const meses = [...new Set(fechas.map(f => f.split("-")[1]))].sort();
+
+  anios.forEach(a => {
+    const opt = document.createElement("option");
+    opt.value = a;
+    opt.textContent = a;
+    filtroAnio.appendChild(opt);
+  });
+
+  meses.forEach(m => {
+    const opt = document.createElement("option");
+    const fechaTemp = new Date(`2023-${m}-01`);
+    opt.value = m;
+    opt.textContent = fechaTemp.toLocaleDateString("es-ES", { month: "long" });
+    filtroMes.appendChild(opt);
+  });
+}
+function filtrarPorAnio() {
+  renderizarGraficosDashboard();
+}
+function filtrarPorMes() {
+  renderizarGraficosDashboard();
+}
+function renderizarGraficosDashboard() {
+  const anio = document.getElementById("filtroAnio").value;
+  const mes = document.getElementById("filtroMes").value;
+
+  let filtrados = datos;
+  if (anio) filtrados = filtrados.filter(d => d.fecha.startsWith(anio));
+  if (mes) filtrados = filtrados.filter(d => d.fecha.split("-")[1] === mes);
+
+  const totalCasos = filtrados.length;
+  const totalMontos = filtrados.reduce((s, d) => s + d.monto_sospechoso, 0);
+
+  document.getElementById("totalCasos").textContent = totalCasos;
+  document.getElementById("totalMontos").textContent = (totalMontos / 1_000_000).toFixed(2) + "M";
+
+// === GRÁFICO REAL: Evolutivo mensual ===
+function formatearMesLabel(yyyy_mm) {
+  const [y, m] = yyyy_mm.split("-");
+  return new Date(`${y}-${m}-01`).toLocaleDateString("es-ES", { month: "short", year: "2-digit" });
+}
+
+const agrupados = {};
+datos.forEach(d => {
+  const key = d.fecha.slice(0, 7); // yyyy-mm
+  if (!agrupados[key]) agrupados[key] = { cantidad: 0, monto: 0 };
+  agrupados[key].cantidad++;
+  agrupados[key].monto += d.monto_sospechoso;
+});
+
+// Ordenar por fecha
+const clavesOrdenadas = Object.keys(agrupados).sort().slice(-6); // últimos 6 meses
+const labels = clavesOrdenadas.map(k => formatearMesLabel(k));
+const dataCasos = clavesOrdenadas.map(k => agrupados[k].cantidad);
+const dataMontos = clavesOrdenadas.map(k => (agrupados[k].monto / 1_000_000).toFixed(2));
+
+const ctx = document.getElementById("graficoEvolutivo");
+if (chartInstance1) chartInstance1.destroy();
+chartInstance1 = new Chart(ctx, {
+  type: "line",
+  data: {
+    labels,
+    datasets: [
+      {
+        label: "Casos",
+        data: dataCasos,
+        borderColor: "#06b6d4",
+        backgroundColor: "transparent",
+        tension: 0.3,
+        yAxisID: "y1"
+      },
+      {
+        label: "Monto (M ARS)",
+        data: dataMontos,
+        borderColor: "#0f766e",
+        backgroundColor: "transparent",
+        tension: 0.3,
+        yAxisID: "y2"
+      }
+    ]
+  },
+  options: {
+    responsive: true,
+    interaction: {
+      mode: 'index',
+      intersect: false
+    },
+    stacked: false,
+    plugins: {
+      legend: { position: 'top' }
+    },
+    scales: {
+      y1: {
+        type: 'linear',
+        position: 'left',
+        title: { display: true, text: "Cantidad de Casos" },
+        ticks: { precision: 0 }
+      },
+      y2: {
+        type: 'linear',
+        position: 'right',
+        title: { display: true, text: "Monto Total (en millones ARS)" },
+        grid: { drawOnChartArea: false }
+      }
+    }
+  }
+});
+// === GRÁFICO CANAL DE DETECCIÓN — CANTIDAD ===
+const ctx2 = document.getElementById("graficoCanalCantidad");
+if (chartInstance2) chartInstance2.destroy();
+
+const agrupadoCanal = {};
+filtrados.forEach(d => {
+  if (!agrupadoCanal[d.canal_deteccion]) agrupadoCanal[d.canal_deteccion] = 0;
+  agrupadoCanal[d.canal_deteccion]++;
+});
+
+const canales = Object.keys(agrupadoCanal);
+const cantidades = canales.map(k => agrupadoCanal[k]);
+
+chartInstance2 = new Chart(ctx2, {
+  type: "bar",
+  data: {
+    labels: canales,
+    datasets: [{
+      label: "Cantidad de Casos",
+      data: cantidades,
+      backgroundColor: "#06b6d4"
+    }]
+  },
+  options: {
+    indexAxis: 'y',
+    responsive: true,
+    plugins: {
+      legend: { display: false },
+      tooltip: { enabled: true }
+    },
+    scales: {
+      x: {
+        beginAtZero: true,
+        title: { display: true, text: "Casos" }
+      },
+      y: {
+        title: { display: true, text: "Canal de Detección" }
+      }
+    }
+  }
+});
+// === GRÁFICO CANAL DE DETECCIÓN — MONTOS ===
+const ctx3 = document.getElementById("graficoCanalMonto");
+if (chartInstance3) chartInstance3.destroy();
+
+const montoPorCanal = {};
+filtrados.forEach(d => {
+  if (!montoPorCanal[d.canal_deteccion]) montoPorCanal[d.canal_deteccion] = 0;
+  montoPorCanal[d.canal_deteccion] += d.monto_sospechoso;
+});
+
+const canalesMonto = Object.keys(montoPorCanal);
+const montos = canalesMonto.map(k => (montoPorCanal[k] / 1_000_000).toFixed(2));
+
+chartInstance3 = new Chart(ctx3, {
+  type: "bar",
+  data: {
+    labels: canalesMonto,
+    datasets: [{
+      label: "Monto Total (M ARS)",
+      data: montos,
+      backgroundColor: "#0f766e"
+    }]
+  },
+  options: {
+    indexAxis: 'y',
+    responsive: true,
+    plugins: {
+      legend: { display: false },
+      tooltip: { enabled: true }
+    },
+    scales: {
+      x: {
+        beginAtZero: true,
+        title: { display: true, text: "Monto Total (en millones ARS)" }
+      },
+      y: {
+        title: { display: true, text: "Canal de Detección" }
+      }
+    }
+  }
+});
+// === GRÁFICO DISTRIBUCIÓN % POR TIPO DE RIESGO ===
+const ctx4 = document.getElementById("graficoPorcentajeTipoRiesgo");
+if (chartInstance4) chartInstance4.destroy();
+
+// Agrupar por mes y tipo_riesgo
+const agrupadoRiesgo = {};
+filtrados.forEach(d => {
+  const mes = d.fecha.slice(0, 7); // yyyy-mm
+  if (!agrupadoRiesgo[mes]) agrupadoRiesgo[mes] = {};
+  if (!agrupadoRiesgo[mes][d.tipo_riesgo]) agrupadoRiesgo[mes][d.tipo_riesgo] = 0;
+  agrupadoRiesgo[mes][d.tipo_riesgo]++;
+});
+
+const mesesOrdenados = Object.keys(agrupadoRiesgo).sort().slice(-6);
+const tipos = [...new Set(filtrados.map(d => d.tipo_riesgo))];
+const datasets = tipos.map(tipo => ({
+  label: tipo,
+  data: mesesOrdenados.map(mes => {
+    const totalMes = Object.values(agrupadoRiesgo[mes] || {}).reduce((a, b) => a + b, 0);
+    const valor = agrupadoRiesgo[mes][tipo] || 0;
+    return totalMes > 0 ? ((valor / totalMes) * 100).toFixed(2) : 0;
+  }),
+  backgroundColor: tipo === "Alto" ? "#ef4444" :
+                   tipo === "Medio" ? "#facc15" :
+                   tipo === "Bajo" ? "#22c55e" : "#60a5fa"
+}));
+
+chartInstance4 = new Chart(ctx4, {
+  type: "bar",
+  data: {
+    labels: mesesOrdenados.map(k => formatearMesLabel(k)),
+    datasets
+  },
+  options: {
+    responsive: true,
+    plugins: {
+      tooltip: { mode: 'index', intersect: false },
+      legend: { position: "bottom" }
+    },
+    scales: {
+      x: {
+        stacked: true,
+        title: { display: true, text: "Mes" }
+      },
+      y: {
+        stacked: true,
+        min: 0,
+        max: 100,
+        title: { display: true, text: "% de Casos" },
+        ticks: {
+          callback: function (value) {
+            return value + "%";
+          }
+        }
+      }
+    }
+  }
+});
+
+}
+window.onload = cargarCSVDesdeGitHub;
