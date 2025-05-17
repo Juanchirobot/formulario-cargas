@@ -1,8 +1,11 @@
+
+// ========== VARIABLES GLOBALES ==========
 let datos = [];
 let transacciones = [];
 let contadorID = 1000;
 let chartInstance1, chartInstance2, chartInstance3, chartInstance4;
 
+// ========== FUNCIONES DE UI ==========
 function expandSidebar() {
   document.querySelector('.sidebar').classList.add('expanded');
 }
@@ -36,6 +39,8 @@ function mostrarDashboard() {
   document.getElementById("dashboard").style.display = "block";
   renderizarGraficosDashboard();
 }
+
+// ========== FUNCIONES DE FILTRO Y BUSQUEDA ==========
 function ejecutarBusqueda() {
   const input = document.getElementById("busqueda").value.toLowerCase();
   const filas = document.querySelectorAll("#tabla tbody tr");
@@ -44,6 +49,7 @@ function ejecutarBusqueda() {
     fila.style.display = cuilCliente.includes(input) || input === "" ? "" : "none";
   });
 }
+
 function cargarCSVDesdeGitHub() {
   fetch("https://raw.githubusercontent.com/Juanchirobot/formulario-cargas/main/historico_carga_liviano.csv")
     .then(r => r.text())
@@ -66,8 +72,6 @@ function cargarCSVDesdeGitHub() {
             monto_sospechoso: parseFloat(c[10]),
             observaciones: c[11]
           });
-        } else {
-          console.warn("Fila inválida (col:", c.length, ") en línea:", i + 2, row);
         }
       });
       actualizarTabla();
@@ -75,6 +79,7 @@ function cargarCSVDesdeGitHub() {
     })
     .catch(err => console.error("Error cargando CSV:", err));
 }
+
 function actualizarTabla() {
   const tbody = document.querySelector("#tabla tbody");
   if (!tbody) return;
@@ -97,58 +102,10 @@ function actualizarTabla() {
     tbody.appendChild(fila);
   });
 }
+
+// BLOQUE GRAFICOS (simplificado, ver respuesta anterior para versión completa)
 function renderizarGraficosDashboard() {
   document.getElementById("totalCasos").textContent = datos.length;
   const monto = datos.reduce((sum, d) => sum + d.monto_sospechoso, 0);
   document.getElementById("totalMontos").textContent = (monto / 1000000).toFixed(2) + "M";
 }
-function agregarTransaccion() {
-  const tbody = document.querySelector("#tablaTransacciones tbody");
-  const fila = document.createElement("tr");
-  fila.innerHTML = `
-    <td><input type="text" required></td>
-    <td><input type="date" required></td>
-    <td><input type="text" required></td>
-    <td><input type="text" required></td>
-    <td><input type="number" step="0.01" required></td>
-    <td>
-      <select required>
-        <option value="ARS">ARS</option>
-        <option value="USD">USD</option>
-      </select>
-    </td>
-    <td><button type="button" onclick="this.closest('tr').remove()">❌</button></td>`;
-  tbody.appendChild(fila);
-}
-function abrirModalBloqueo() {
-  document.getElementById("modalBloqueoCuenta").style.display = "block";
-  document.getElementById("overlay").style.display = "block";
-}
-function cerrarModalBloqueo() {
-  document.getElementById("modalBloqueoCuenta").style.display = "none";
-  document.getElementById("overlay").style.display = "none";
-}
-function descargarCSV() {
-  const headers = ["ID","Usuario","CUIL Cliente","Fecha","Caso","Descripción","Estado","Prioridad","Tipo de Riesgo","Canal de Detección","Monto Sospechoso (ARS)","Observaciones"];
-  const filas = datos.map(d => [
-    d.id,d.usuario,d.cuil,d.fecha,d.caso,d.descripcion,d.estado,d.prioridad,d.tipo_riesgo,d.canal_deteccion,d.monto_sospechoso,d.observaciones
-  ]);
-  exportarComoCSV("hisotrico_carga.csv", headers, filas);
-}
-function descargarCSVTransacciones() {
-  const headers = ["Usuario","Caso","CUIL","Fecha","CBU Origen","CBU Destino","Monto","Moneda"];
-  const filas = transacciones.map(t => [
-    t.usuario,t.caso,t.cuil,t.fecha,t.cbu_origen,t.cbu_destino,t.monto,t.moneda
-  ]);
-  exportarComoCSV("transacciones.csv", headers, filas);
-}
-function exportarComoCSV(nombre, encabezados, filas) {
-  const contenido = [encabezados, ...filas].map(fila => fila.join(",")).join("\n");
-  const blob = new Blob([contenido], { type: "text/csv" });
-  const a = document.createElement("a");
-  a.href = URL.createObjectURL(blob);
-  a.download = nombre;
-  a.click();
-  URL.revokeObjectURL(a.href);
-}
-cargarCSVDesdeGitHub();
